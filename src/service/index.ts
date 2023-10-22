@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
 );
 
 async function refreshToken() {
-  const res = await axiosInstance.get("/user/refresh", {
+  const res = await axiosInstance.get("/user/admin/refresh", {
     params: {
       refreshToken: localStorage.getItem("refresh_token"),
     },

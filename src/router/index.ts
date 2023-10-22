@@ -5,15 +5,21 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      redirect: "/index",
+      redirect: "/login",
     },
     {
-      path: "/index",
-      component: () => import("@/views/admin/AdminIndex.vue"),
+      path: "/main",
+      component: () => import("@/views/admin/AdminMain.vue"),
       children: [
         {
-          path: "/user_message",
-          component: () => import("@/views/admin/UserMessage.vue"),
+          path: "/menu",
+          component: () => import("@/views/admin/children/AdminMenu.vue"),
+          children: [
+            {
+              path: "/user_message",
+              component: () => import("@/views/admin/children/UserMessage.vue"),
+            },
+          ],
         },
       ],
     },
