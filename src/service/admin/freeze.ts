@@ -1,8 +1,9 @@
 import { axiosInstance } from "@/service";
 
-export function login(username: string, password: string) {
-  return axiosInstance.post("/user/admin/login", {
-    username,
-    password,
+export async function freezeUser(id: number) {
+  return await axiosInstance.get("/user/freeze", {
+    params: {
+      id,
+    },
   });
 }

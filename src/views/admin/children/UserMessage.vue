@@ -31,8 +31,9 @@
           align="right"
           :data-source="searchResult"
           :pagination="{
-            current: pageConfig.pageNo,
-            pageSize: pageConfig.pageSize,
+            current: pageNo,
+            pageSize: pageSize,
+            total: totalCount,
             onChange: handleChange,
           }"
           :bordered="true"
@@ -54,9 +55,11 @@ import {
   Table,
   message,
   Image,
+  Badge,
 } from "ant-design-vue";
 import { userSearch } from "@/service/admin/list";
 import { getURL } from "@/utils/getUrl";
+import { freezeUser } from "@/service/admin/freeze";
 
 interface SearchUser {
   nickName: string;
@@ -75,7 +78,18 @@ interface SearchResult {
   id?: number;
 }
 
-let searchResult = ref<SearchResult[]>([]);
+let searchResult = ref<SearchResult[]>([
+  {
+    username: "",
+    nick_name: "",
+    head_pic: "",
+    email: "",
+    create_time: "",
+    phone: 1,
+    is_frozen: false,
+    id: 1,
+  },
+]);
 
 const columns: TableColumnsType<SearchResult> = [
   {
@@ -104,13 +118,27 @@ const columns: TableColumnsType<SearchResult> = [
     dataIndex: "create_time",
   },
   {
+    title: "状态",
+    dataIndex: "is_frozen",
+    customRender: (value) => {
+      if (value.record.is_frozen) {
+        return h(Badge, { status: "error", text: "已冻结" });
+      }
+    },
+  },
+  {
     title: "操作",
-    customRender: (value) =>
-      h("a", {
-        href: "#",
+    customRender: (value) => {
+      let id = value.record.id;
+
+      return h(Button, {
+        onClick: () => {
+          handleFreeze(id as number);
+        },
         innerHTML: "冻结",
-        onClick: handleFreeze(value.record.id),
-      }),
+        type: "link",
+      });
+    },
   },
 ];
 
@@ -120,22 +148,35 @@ const searchUser = ref<SearchUser>({
   email: "",
 });
 
-const pageConfig = ref({
-  pageNo: 1,
-  pageSize: 10,
-});
+let pageNo = 1;
+let pageSize = 10;
 
-function handleFreeze() {}
+const setPage = (newPageNo: number, newPageSize: number) => {
+  pageNo = newPageNo;
+  pageSize = newPageSize;
+};
 
-function handleChange(pageNo: number, pageSize: number) {
-  setpage;
+async function handleFreeze(id: number) {
+  const res = await freezeUser(id);
+
+  const { code, data } = res.data;
+
+  if (code === 201 || code === 200) {
+    message.success("成功冻结");
+    searchBtn(searchUser.value);
+  } else {
+    message.error(data || "系统繁忙,请稍后再试");
+  }
 }
 
-async function searchBtn(
-  values: SearchUser,
-  pageNo = pageConfig.value.pageNo,
-  pageSize = pageConfig.value.pageSize
-) {
+let totalCount = ref(15);
+
+function handleChange(pageNo: number, pageSize: number) {
+  setPage(pageNo, pageSize);
+  searchBtn(searchUser.value);
+}
+
+async function searchBtn(values: SearchUser) {
   const res = await userSearch(
     values.username,
     values.nickName,
@@ -147,11 +188,12 @@ async function searchBtn(
   const { data } = res.data;
   if (res.status === 200 || res.status === 201) {
     searchResult.value = data.users;
+    totalCount.value = data.totalCount;
   } else {
     message.error(data || "系统繁忙,请稍后再试");
   }
 }
-searchBtn(searchUser as unknown as SearchUser);
+searchBtn(searchUser.value);
 </script>
 
 <style scoped lang="less">
