@@ -45,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import { login } from "@/service/user_manage/login";
 import {
   Form,
   FormItem,
@@ -53,7 +54,7 @@ import {
   Button,
   message,
 } from "ant-design-vue";
-import { login } from "@/service/admin/login";
+
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -82,7 +83,7 @@ async function loginBtn(values: LoginUser) {
     localStorage.setItem("access_token", data.accessToken);
     localStorage.setItem("user_info", JSON.stringify(data.userInfo));
     setTimeout(() => {
-      router.push("/user_message");
+      router.push("/show_menu/user_manage");
     }, 1500);
   } else {
     message.error(data || "系统繁忙,请稍后再试");
@@ -111,3 +112,4 @@ async function loginBtn(values: LoginUser) {
   }
 }
 </style>
+@/service/user_manage/login

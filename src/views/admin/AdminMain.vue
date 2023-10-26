@@ -1,10 +1,12 @@
 <template>
   <div class="container">
     <div class="header">
-      <h1>会议室预定-管理端</h1>
-      <UserOutlined class="icon" />
+      <h1 @click="$router.push('/show_menu/user_manage')" class="title">
+        会议室预定-管理端
+      </h1>
+      <UserOutlined class="icon" @click="$router.push('/update_menu/info')" />
     </div>
-    <div class="body">
+    <div class="menu">
       <RouterView></RouterView>
     </div>
   </div>
@@ -29,15 +31,23 @@ import { UserOutlined } from "@ant-design/icons-vue";
     padding: 0 20px;
     color: rgb(37, 42, 40);
 
-    h1 {
+    .title {
       margin: 0;
       padding: 0;
+      cursor: pointer;
+      color: #272525;
+      text-decoration: none;
     }
 
     .icon {
       font-size: 40px;
       margin-top: 20px;
+      color: rgb(45, 27, 144);
     }
+  }
+
+  .menu {
+    margin-top: 20px;
   }
 }
 </style>

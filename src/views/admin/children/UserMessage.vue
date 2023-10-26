@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="message-container">
     <div class="search">
       <Form :model="searchUser" @finish="searchBtn" layout="inline">
         <FormItem label="用户名" name="username">
@@ -25,21 +25,20 @@
           <Button class="btn" type="primary" html-type="submit"> 搜索 </Button>
         </FormItem>
       </Form>
-      <div class="table">
-        <Table
-          :columns="columns"
-          align="right"
-          :data-source="searchResult"
-          :pagination="{
-            current: pageNo,
-            pageSize: pageSize,
-            total: totalCount,
-            onChange: handleChange,
-          }"
-          :bordered="true"
-        >
-        </Table>
-      </div>
+    </div>
+    <div class="table">
+      <Table
+        :columns="columns"
+        :data-source="searchResult"
+        :pagination="{
+          current: pageNo,
+          pageSize: pageSize,
+          total: totalCount,
+          onChange: handleChange,
+        }"
+        :bordered="true"
+      >
+      </Table>
     </div>
   </div>
 </template>
@@ -57,9 +56,10 @@ import {
   Image,
   Badge,
 } from "ant-design-vue";
-import { userSearch } from "@/service/admin/list";
+
 import { getURL } from "@/utils/getUrl";
-import { freezeUser } from "@/service/admin/freeze";
+import { userSearch } from "@/service/user_manage/list";
+import { freezeUser } from "@/service/user_manage/freeze";
 
 interface SearchUser {
   nickName: string;
@@ -95,18 +95,22 @@ const columns: TableColumnsType<SearchResult> = [
   {
     title: "用户名",
     dataIndex: "username",
+    align: "center",
   },
   {
     title: "昵称",
     dataIndex: "nick_name",
+    align: "center",
   },
   {
     title: "邮箱",
     dataIndex: "email",
+    align: "center",
   },
   {
     title: "头像",
     dataIndex: "head_pic",
+    align: "center",
     customRender: (value) => {
       if (value.text !== "NULL") {
         return h(Image, { src: getURL(value.text), width: "50px" });
@@ -116,10 +120,12 @@ const columns: TableColumnsType<SearchResult> = [
   {
     title: "创建时间",
     dataIndex: "create_time",
+    align: "center",
   },
   {
     title: "状态",
     dataIndex: "is_frozen",
+    align: "center",
     customRender: (value) => {
       if (value.record.is_frozen) {
         return h(Badge, { status: "error", text: "已冻结" });
@@ -128,6 +134,7 @@ const columns: TableColumnsType<SearchResult> = [
   },
   {
     title: "操作",
+    align: "center",
     customRender: (value) => {
       let id = value.record.id;
 
@@ -149,7 +156,7 @@ const searchUser = ref<SearchUser>({
 });
 
 let pageNo = 1;
-let pageSize = 10;
+let pageSize = 9;
 
 const setPage = (newPageNo: number, newPageSize: number) => {
   pageNo = newPageNo;
@@ -197,11 +204,15 @@ searchBtn(searchUser.value);
 </script>
 
 <style scoped lang="less">
-.container {
+.message-container {
+  display: flex;
+  flex-direction: column;
   padding: 20px;
 
-  .table {
-    margin-top: 20px;
+  .search {
+    margin-left: 20%;
+    margin-bottom: 20px;
   }
 }
 </style>
+@/service/user_manage/list@/service/user_manage/freeze
