@@ -48,6 +48,7 @@ import { UserOutlined } from "@ant-design/icons-vue";
 
   .menu {
     margin-top: 20px;
+    height: 100px;
   }
 }
 </style>

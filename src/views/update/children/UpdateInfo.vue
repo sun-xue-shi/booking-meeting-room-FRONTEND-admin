@@ -2,7 +2,7 @@
   <div class="update-container">
     <h1>会议室预定系统</h1>
     <Form
-      :model="updateUserInfo"
+      :model="infoStore.updateUserInfo"
       @finish="updateBtn"
       :label-col="{ span: 5 }"
       :wrapper-col="{ span: 17 }"
@@ -10,7 +10,7 @@
     >
       <FormItem label="头像" name="headPic">
         <img
-          :src="getURL(updateUserInfo.headPic)"
+          :src="getURL(infoStore.updateUserInfo.headPic)"
           alt="头像"
           width="100"
           height="100"
@@ -33,7 +33,7 @@
         <Input
           placeholder="请输入昵称"
           :maxlength="20"
-          v-model:value="updateUserInfo.nickName"
+          v-model:value="infoStore.updateUserInfo.nickName"
         />
       </FormItem>
 
@@ -49,7 +49,7 @@
         <Input
           placeholder="请输入qq邮箱"
           :maxlength="20"
-          v-model:value="updateUserInfo.email"
+          v-model:value="infoStore.updateUserInfo.email"
         />
       </FormItem>
 
@@ -62,17 +62,18 @@
           <Input
             placeholder="请输入验证码"
             :maxlength="6"
-            v-model:value="updateUserInfo.captcha"
+            v-model:value="infoStore.updateUserInfo.captcha"
           />
         </div>
         <Button
           type="primary"
-          @click="sendCaptcha"
+          @click="infoStore.sendCaptcha"
           class="btn"
-          :disabled="isSend"
-          :loading="isLoading"
+          :disabled="infoStore.isSend"
+          :loading="infoStore.isLoading"
         >
-          发送
+          <span v-show="infoStore.isSend">{{ infoStore.timeout }}s后再次 </span
+          >发送
         </Button>
       </FormItem>
 
@@ -96,36 +97,14 @@ import {
   type UploadChangeParam,
 } from "ant-design-vue";
 import { InboxOutlined } from "@ant-design/icons-vue";
-import { ref } from "vue";
-import { updateInfoCaptcha } from "@/service/email/captcha";
-import { getUserInfo, updateInfo } from "@/service/update/update";
+// import { ref } from "vue";
+// import { updateInfoCaptcha } from "@/service/email/captcha";
+import { updateInfo } from "@/service/update/update";
 import { getURL } from "@/utils/getUrl";
+import { useInfoStore, type UpdateUserInfo } from "@/stores/info";
 
-export interface UpdateUserInfo {
-  headPic: string;
-  nickName: string;
-  email: string;
-  captcha: string;
-}
-
-const updateUserInfo = ref<UpdateUserInfo>({
-  headPic: "",
-  nickName: "",
-  email: "",
-  captcha: "",
-});
-
-async function getLoginInfo() {
-  const res = await getUserInfo();
-  const { data } = res.data;
-  updateUserInfo.value.email = data.email;
-  updateUserInfo.value.headPic = data.headPic;
-  updateUserInfo.value.nickName = data.nickName;
-}
-getLoginInfo();
-
-let isSend = ref(false);
-let isLoading = ref(false);
+const infoStore = useInfoStore();
+infoStore.getLoginInfo();
 
 async function updateBtn(values: UpdateUserInfo) {
   const res = await updateInfo(values);
@@ -137,33 +116,10 @@ async function updateBtn(values: UpdateUserInfo) {
   }
 }
 
-async function sendCaptcha() {
-  if (!updateUserInfo.value.email) {
-    return message.warn("请填写邮箱地址!");
-  } else {
-    isLoading.value = true;
-    const res = await updateInfoCaptcha();
-
-    const { data } = res.data;
-
-    if (res.status === 200 || res.status === 201) {
-      message.success(data + ",30s后可以再次发送");
-      isLoading.value = false;
-      isSend.value = true;
-      setTimeout(() => {
-        isSend.value = false;
-      }, 1000 * 30);
-    } else {
-      message.error(data || "系统繁忙,请稍后再试");
-    }
-  }
-}
-
 function handleChange(info: UploadChangeParam) {
   const { status } = info.file;
   if (status === "done") {
-    console.log(info.file.response.data);
-    updateUserInfo.value.headPic = info.file.response.data;
+    infoStore.updateUserInfo.headPic = info.file.response.data;
     message.success(info.file.name + "文件上传成功");
   } else if (status === "error") {
     message.error(info.file.name + "文件上传失败");
@@ -181,13 +137,13 @@ function handleChange(info: UploadChangeParam) {
   }
 
   .captcha {
-    margin-right: 110px;
+    margin-right: 125px;
   }
   .btn {
     position: absolute;
     top: 0;
     right: 0;
-    width: 35%;
+    width: 40%;
   }
 }
 </style>

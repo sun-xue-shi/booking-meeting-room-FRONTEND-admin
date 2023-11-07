@@ -75,6 +75,7 @@ import { deleteRoom } from "@/service/room_manage/delete";
 import { QuestionCircleFilled } from "@ant-design/icons-vue";
 import CreateMeeting from "@/views/admin/children/createModal/CreateMeeting.vue";
 import UpdateMeeting from "@/views/admin/children/updateMeeting/UpdateMeeting.vue";
+import { formatUTC } from "@/utils/format";
 
 let isCreateOpen = ref(false);
 let isUpdateOpen = ref(false);
@@ -101,8 +102,8 @@ interface MeetingRoomSearchResult {
   equipment: string;
   description: string;
   isBooked: boolean;
-  createTime: Date;
-  updateTime: Date;
+  createTime: string;
+  updateTime: string;
 }
 
 let searchResult = ref<MeetingRoomSearchResult[]>([]);
@@ -137,11 +138,13 @@ const columns: TableColumnsType<MeetingRoomSearchResult> = [
   {
     title: "添加时间",
     dataIndex: "createTime",
+    customRender: (value) => formatUTC(value.record.createTime),
     align: "center",
   },
   {
     title: "上次更新时间",
     dataIndex: "updateTime",
+    customRender: (value) => formatUTC(value.record.updateTime),
     align: "center",
   },
   {
@@ -234,7 +237,6 @@ async function handleDelete(id: number) {
     message.error("删除失败");
   }
 }
-
 
 // 关闭模态框
 function handelClose() {

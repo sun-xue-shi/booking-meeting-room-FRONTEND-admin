@@ -60,6 +60,7 @@ import {
 import { getURL } from "@/utils/getUrl";
 import { userSearch } from "@/service/user_manage/list";
 import { freezeUser } from "@/service/user_manage/freeze";
+import { formatUTC } from "@/utils/format";
 
 interface SearchUser {
   nickName: string;
@@ -73,6 +74,7 @@ interface SearchResult {
   head_pic: string;
   email: string;
   create_time: string;
+  update_time: string;
   phone?: number;
   is_frozen?: boolean;
   id?: number;
@@ -85,6 +87,7 @@ let searchResult = ref<SearchResult[]>([
     head_pic: "",
     email: "",
     create_time: "",
+    update_time: "",
     phone: 1,
     is_frozen: false,
     id: 1,
@@ -120,6 +123,13 @@ const columns: TableColumnsType<SearchResult> = [
   {
     title: "创建时间",
     dataIndex: "create_time",
+    customRender: (value) => formatUTC(value.record.create_time),
+    align: "center",
+  },
+  {
+    title: "上次修改时间",
+    dataIndex: "update_time",
+    customRender: (value) => formatUTC(value.record.update_time),
     align: "center",
   },
   {
@@ -215,4 +225,3 @@ searchBtn(searchUser.value);
   }
 }
 </style>
-@/service/user_manage/list@/service/user_manage/freeze

@@ -2,7 +2,7 @@
 
 <template>
   <div class="">
-    <h2>404</h2>
+    <h2>请输入正确路由，别乱跳转哦~~</h2>
   </div>
 </template>
 
