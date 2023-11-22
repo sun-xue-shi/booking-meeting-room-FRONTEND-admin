@@ -68,7 +68,7 @@ interface SearchUser {
   email: string;
 }
 
-interface SearchResult {
+export interface SearchResult {
   username: string;
   nick_name: string;
   head_pic: string;

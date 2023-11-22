@@ -19,6 +19,17 @@
         </FormItem>
 
         <FormItem>
+          <Button
+            class="btn1"
+            type="default"
+            @click="handelReset"
+            :icon="h(RedoOutlined)"
+          >
+            重置
+          </Button>
+        </FormItem>
+
+        <FormItem>
           <Button class="btn1" type="primary" html-type="submit"> 搜索 </Button>
         </FormItem>
 
@@ -69,10 +80,11 @@ import {
   message,
   Badge,
   Popconfirm,
+  type FormInstance,
 } from "ant-design-vue";
 import { meetingSearch } from "@/service/room_manage/list";
 import { deleteRoom } from "@/service/room_manage/delete";
-import { QuestionCircleFilled } from "@ant-design/icons-vue";
+import { QuestionCircleFilled, RedoOutlined } from "@ant-design/icons-vue";
 import CreateMeeting from "@/views/admin/children/createModal/CreateMeeting.vue";
 import UpdateMeeting from "@/views/admin/children/updateMeeting/UpdateMeeting.vue";
 import { formatUTC } from "@/utils/format";
@@ -94,7 +106,7 @@ const searchMeetingRoom = ref<SearchMeetingRoom>({
   capacity: undefined,
 });
 
-interface MeetingRoomSearchResult {
+export interface MeetingRoomSearchResult {
   id: number;
   name: string;
   capacity: number;
@@ -244,6 +256,13 @@ function handelClose() {
   isUpdateOpen.value = false;
   searchBtn(searchMeetingRoom.value);
 }
+
+// 表单重置
+const formRef = ref<FormInstance>();
+function handelReset() {
+  formRef.value?.resetFields();
+  searchBtn(searchMeetingRoom.value);
+}
 </script>
 
 <style scoped lang="less">
@@ -258,6 +277,10 @@ function handelClose() {
   }
   .btn2 {
     background-color: green;
+  }
+
+  .ant-form-item {
+    margin: 10px;
   }
 }
 </style>
