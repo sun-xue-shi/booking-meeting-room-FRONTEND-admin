@@ -80,19 +80,7 @@ export interface SearchResult {
   id?: number;
 }
 
-let searchResult = ref<SearchResult[]>([
-  {
-    username: "",
-    nick_name: "",
-    head_pic: "",
-    email: "",
-    create_time: "",
-    update_time: "",
-    phone: 1,
-    is_frozen: false,
-    id: 1,
-  },
-]);
+let searchResult = ref<SearchResult[]>([]);
 
 const columns: TableColumnsType<SearchResult> = [
   {

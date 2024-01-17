@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { axiosInstance } from "..";
+import { axiosInstance } from "@/service";
 import type { SearchBooking } from "@/views/admin/children/BookingManage.vue";
 
 export async function bookingList(
