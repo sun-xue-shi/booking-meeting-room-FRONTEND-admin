@@ -32,14 +32,12 @@ export async function bookingList(
     ).valueOf();
   }
 
-  console.log(bookingTimeRangeStart);
-  console.log(bookingTimeRangeEnd);
-
   return await axiosInstance.get("/booking/list", {
     params: {
       username: searchBooking.username,
       roomName: searchBooking.meetingRoomName,
       location: searchBooking.meetingRoomPosition,
+      theme: searchBooking.theme,
       bookingTimeRangeStart,
       bookingTimeRangeEnd,
       pageNo: pageNo,

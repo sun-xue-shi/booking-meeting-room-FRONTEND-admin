@@ -16,6 +16,7 @@
             :options="[
               { value: 'bar', label: '柱形图' },
               { value: 'pie', label: '饼图' },
+              { value: 'wordCloud', label: '主题词云' },
             ]"
             style="width: 100px"
           >
@@ -29,24 +30,27 @@
         </FormItem>
       </Form>
     </div>
-    <div class="chart" ref="chartRef1">图表</div>
-    <div class="chart" ref="chartRef2">图表</div>
+    <div class="chart">
+      <div class="chart1" ref="chartRef1"></div>
+      <div class="chart1" ref="chartRef2"></div>
+    </div>
+
+    <div
+      class="cloud"
+      ref="chartRef3"
+      v-if="formSearch.chartType === 'wordCloud'"
+    ></div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import {
-  Form,
-  FormItem,
-  Button,
-  DatePicker,
-  Select,
-  message,
-} from "ant-design-vue";
+import { Form, FormItem, Button, DatePicker, Select } from "ant-design-vue";
 import * as echarts from "echarts";
+import "echarts-wordcloud";
 import dayjs from "dayjs";
 import {
+  bookingThemeCount,
   meetingRoomUsedCount,
   userBookingCount,
 } from "@/service/statistic/statistic";
@@ -69,6 +73,12 @@ type BookingData = {
   username: string;
 };
 
+type ThemeData = {
+  themeCount: number;
+  bookingId: string;
+  bookingTheme: string;
+};
+
 const formSearch = ref<FormSearch>({
   chartType: "bar",
   endTime: "",
@@ -77,6 +87,7 @@ const formSearch = ref<FormSearch>({
 
 const bookData = ref<BookingData[]>([]);
 const roomUsedData = ref<RoomUsedData[]>([]);
+const themeData = ref<ThemeData[]>([]);
 async function getStatisticData(values: {
   startTime: string;
   endTime: string;
@@ -85,26 +96,22 @@ async function getStatisticData(values: {
   const endTime = dayjs(values.endTime).format("YYYY-MM-DD");
 
   const res1 = await userBookingCount(startTime, endTime);
-
   const { data } = res1.data;
-  if (res1.status === 201 || res1.status === 200) {
-    bookData.value = data;
-  } else {
-    message.error(data || "系统繁忙，请稍后再试");
-  }
+  bookData.value = data;
 
   const res2 = await meetingRoomUsedCount(startTime, endTime);
-
   const { data: data2 } = res2.data;
-  if (res2.status === 201 || res2.status === 200) {
-    roomUsedData.value = data2;
-  } else {
-    message.error(data || "系统繁忙，请稍后再试");
-  }
+  roomUsedData.value = data2;
+
+  const res3 = await bookingThemeCount(startTime, endTime);
+  const { data: data3 } = res3.data;
+  themeData.value = data3;
+  console.log(themeData.value);
 }
 
 const chartRef1 = ref<HTMLElement>();
 const chartRef2 = ref<HTMLElement>();
+const chartRef3 = ref<HTMLElement>();
 const onSubmit = () => {
   if (formSearch.value.startTime) {
     getStatisticData({
@@ -112,8 +119,13 @@ const onSubmit = () => {
       endTime: formSearch.value?.endTime,
     });
   }
-  renderChart1();
-  renderChart2();
+
+  if (formSearch.value.chartType !== "wordCloud") {
+    renderChart1();
+    renderChart2();
+  } else {
+    renderChart3();
+  }
 };
 
 const renderChart1 = () => {
@@ -171,6 +183,75 @@ const renderChart2 = () => {
   });
 };
 
+const renderChart3 = () => {
+  const myChart = echarts.init(chartRef3.value!, "light", {
+    renderer: "canvas",
+  });
+
+  myChart.setOption({
+    title: {
+      text: "会议主题词云",
+    },
+    series: [
+      {
+        type: "wordCloud",
+        shape: "circle",
+
+        keepAspect: false,
+
+        // maskImage: maskImage,
+
+        left: "center",
+        top: "center",
+        width: "100%",
+        height: "100%",
+        right: null,
+        bottom: null,
+
+        rotationRange: [-45, 45],
+        rotationStep: 45,
+        gridSize: 20,
+
+        drawOutOfBound: false,
+
+        shrinkToFit: false,
+        layoutAnimation: true,
+
+        textStyle: {
+          fontFamily: "sans-serif",
+          fontWeight: "bold",
+          color: function () {
+            // Random color
+            return (
+              "rgb(" +
+              [
+                Math.round(Math.random() * 220),
+                Math.round(Math.random() * 220),
+                Math.round(Math.random() * 220),
+              ].join(",") +
+              ")"
+            );
+          },
+        },
+        emphasis: {
+          focus: "self",
+          textStyle: {
+            textShadowBlur: 10,
+            textShadowColor: "#333",
+          },
+        },
+
+        data: themeData.value.map((item) => {
+          return {
+            name: item.bookingTheme,
+            value: item.themeCount,
+          };
+        }),
+      },
+    ],
+  });
+};
+
 onMounted(() => {
   getStatisticData({ startTime: "2023-12-31", endTime: "2024-12-31" });
 });
@@ -187,11 +268,24 @@ onMounted(() => {
     margin-bottom: 30px;
   }
 
-  .chart {
+  .cloud {
     margin: 0 auto;
     width: 800px;
     height: 600px;
   }
+  .chart {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    width: 1200px;
+    height: 600px;
+    .chart1 {
+      padding-left: 20px;
+      margin: 0 auto;
+      width: 500px;
+    }
+  }
+
   .ant-form-item {
     margin: 10px;
   }

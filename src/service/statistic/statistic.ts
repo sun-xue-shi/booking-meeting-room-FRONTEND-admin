@@ -17,3 +17,12 @@ export async function userBookingCount(startTime: string, endTime: string) {
     },
   });
 }
+
+export async function bookingThemeCount(startTime: string, endTime: string) {
+  return await axiosInstance.get("/statistic/bookingThemeCount", {
+    params: {
+      startTime: startTime,
+      endTime: endTime,
+    },
+  });
+}

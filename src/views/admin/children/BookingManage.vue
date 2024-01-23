@@ -1,7 +1,7 @@
 <template>
   <div class="room-container">
     <div class="search">
-      <Form :model="searchBooking" @finish="searchBtn" layout="inline">
+      <Form :model="searchBooking" layout="inline">
         <FormItem label="预订人" name="username">
           <Input :maxlength="20" v-model:value="searchBooking.username" />
         </FormItem>
@@ -11,6 +11,10 @@
             :maxlength="20"
             v-model:value="searchBooking.meetingRoomName"
           />
+        </FormItem>
+
+        <FormItem label="会议主题" name="theme">
+          <Input :maxlength="20" v-model:value="searchBooking.theme" />
         </FormItem>
 
         <FormItem label="会议室位置" name="meetingRoomPosition">
@@ -48,9 +52,7 @@
         </FormItem>
 
         <FormItem>
-          <Button class="btn1" type="primary" html-type="submit">
-            搜索 预定申请
-          </Button>
+          <Button class="btn1" type="primary" html-type="submit"> 搜索 </Button>
         </FormItem>
       </Form>
     </div>
@@ -84,7 +86,7 @@ import {
   DatePicker,
   TimePicker,
   Popconfirm,
-type FormInstance,
+  type FormInstance,
 } from "ant-design-vue";
 import {
   apply,
@@ -100,6 +102,7 @@ import { QuestionCircleFilled, RedoOutlined } from "@ant-design/icons-vue";
 export interface SearchBooking {
   username: string;
   meetingRoomName: string;
+  theme: string;
   meetingRoomPosition: string;
   rangeStartDate: string;
   rangeStartTime: string;
@@ -107,17 +110,9 @@ export interface SearchBooking {
   rangeEndTime: string;
 }
 
-const searchBooking = ref<SearchBooking>({
-  username: "",
-  meetingRoomName: "",
-  meetingRoomPosition: "",
-  rangeEndDate: "",
-  rangeEndTime: "",
-  rangeStartDate: "",
-  rangeStartTime: "",
-});
+const searchBooking = ref({} as SearchBooking);
 
-interface BookingSearchResult {
+type BookingSearchResult = {
   id: number;
   startTime: string;
   endTime: string;
@@ -127,7 +122,8 @@ interface BookingSearchResult {
   user: SearchResult;
   status: string;
   note: string;
-}
+  theme: string;
+};
 
 let searchResult = ref<BookingSearchResult[]>();
 
@@ -139,7 +135,12 @@ const columns: TableColumnsType<BookingSearchResult> = [
     align: "center",
     customRender: (value) => h("div", { innerHTML: value.record.room.name }),
   },
-
+  {
+    title: "会议主题",
+    dataIndex: "theme",
+    align: "center",
+    // customRender: (value) => h("div", { innerHTML: value.record.room.name }),
+  },
   {
     title: "会议室位置",
     dataIndex: "location",
@@ -240,7 +241,7 @@ const columns: TableColumnsType<BookingSearchResult> = [
 ];
 
 let pageNo = 1;
-let pageSize = 9;
+let pageSize = 10;
 
 const setPage = (newPageNo: number, newPageSize: number) => {
   pageNo = newPageNo;

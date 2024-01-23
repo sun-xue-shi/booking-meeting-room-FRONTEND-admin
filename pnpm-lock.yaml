@@ -20,6 +20,9 @@ dependencies:
   echarts:
     specifier: ^5.4.3
     version: 5.4.3
+  echarts-wordcloud:
+    specifier: ^2.1.0
+    version: 2.1.0(echarts@5.4.3)
   eslint-plugin-prettier:
     specifier: ^5.0.1
     version: 5.0.1(eslint@8.51.0)(prettier@3.0.3)
@@ -1394,6 +1397,14 @@ packages:
 
   /dom-scroll-into-view@2.0.1:
     resolution: {integrity: sha512-bvVTQe1lfaUr1oFzZX80ce9KLDlZ3iU+XGNE/bz9HnGdklTieqsbmsLHe+rT2XWqopvL0PckkYqN7ksmm5pe3w==}
+    dev: false
+
+  /echarts-wordcloud@2.1.0(echarts@5.4.3):
+    resolution: {integrity: sha512-Kt1JmbcROgb+3IMI48KZECK2AP5lG6bSsOEs+AsuwaWJxQom31RTNd6NFYI01E/YaI1PFZeueaupjlmzSQasjQ==}
+    peerDependencies:
+      echarts: ^5.0.1
+    dependencies:
+      echarts: 5.4.3
     dev: false
 
   /echarts@5.4.3:

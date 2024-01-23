@@ -60,6 +60,9 @@ axiosInstance.interceptors.response.use(
           window.location.href = "/login";
         }, 1500);
       }
+      if (res.status !== 200 && res.status !== 201) {
+        message.error(data || "系统繁忙，请稍后再试");
+      }
     } else {
       return error.response;
     }

@@ -147,14 +147,10 @@ const columns: TableColumnsType<SearchResult> = [
   },
 ];
 
-const searchUser = ref<SearchUser>({
-  nickName: "",
-  username: "",
-  email: "",
-});
+const searchUser = ref({} as SearchUser);
 
 let pageNo = 1;
-let pageSize = 9;
+let pageSize = 10;
 
 const setPage = (newPageNo: number, newPageSize: number) => {
   pageNo = newPageNo;
