@@ -75,7 +75,6 @@ type BookingData = {
 
 type ThemeData = {
   themeCount: number;
-  bookingId: string;
   bookingTheme: string;
 };
 
@@ -106,7 +105,6 @@ async function getStatisticData(values: {
   const res3 = await bookingThemeCount(startTime, endTime);
   const { data: data3 } = res3.data;
   themeData.value = data3;
-  console.log(themeData.value);
 }
 
 const chartRef1 = ref<HTMLElement>();
