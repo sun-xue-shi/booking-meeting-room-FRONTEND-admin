@@ -1,7 +1,7 @@
 <template>
   <div class="room-container">
     <div class="search">
-      <Form :model="searchBooking" layout="inline">
+      <Form :model="searchBooking" layout="inline" ref="formRef">
         <FormItem label="预订人" name="username">
           <Input :maxlength="20" v-model:value="searchBooking.username" />
         </FormItem>
@@ -52,7 +52,9 @@
         </FormItem>
 
         <FormItem>
-          <Button class="btn1" type="primary" html-type="submit"> 搜索 </Button>
+          <Button class="btn1" type="primary" @click="handleSearch">
+            搜索
+          </Button>
         </FormItem>
       </Form>
     </div>
@@ -198,45 +200,48 @@ const columns: TableColumnsType<BookingSearchResult> = [
   {
     title: "操作",
     align: "center",
-    customRender: (value) =>
-      h("div", [
-        h(
-          Popconfirm,
-          {
-            okText: "确定",
-            cancelText: "取消",
-            title: "通过申请",
-            description: "确认通过吗?",
-            onConfirm: () => changeStatus(value.record.id, "apply"),
-            icon: h(QuestionCircleFilled),
-          },
-          [h("a", { innerHTML: " 通过 " })]
-        ),
-        h(
-          Popconfirm,
-          {
-            okText: "确定",
-            cancelText: "取消",
-            title: "驳回申请",
-            description: "确认驳回吗?",
-            onConfirm: () => changeStatus(value.record.id, "reject"),
-            icon: h(QuestionCircleFilled),
-          },
-          [h("a", { innerHTML: " 驳回 " })]
-        ),
-        h(
-          Popconfirm,
-          {
-            okText: "确定",
-            cancelText: "取消",
-            title: "解除申请",
-            description: "确认解除吗?",
-            onConfirm: () => changeStatus(value.record.id, "unbind"),
-            icon: h(QuestionCircleFilled),
-          },
-          [h("a", { innerHTML: " 解除 " })]
-        ),
-      ]),
+    customRender: (value) => {
+      return value.record.status === "申请中"
+        ? h("div", [
+            h(
+              Popconfirm,
+              {
+                okText: "确定",
+                cancelText: "取消",
+                title: "通过申请",
+                description: "确认通过吗?",
+                onConfirm: () => changeStatus(value.record.id, "apply"),
+                icon: h(QuestionCircleFilled),
+              },
+              [h("a", { innerHTML: " 通过 " })]
+            ),
+            h(
+              Popconfirm,
+              {
+                okText: "确定",
+                cancelText: "取消",
+                title: "驳回申请",
+                description: "确认驳回吗?",
+                onConfirm: () => changeStatus(value.record.id, "reject"),
+                icon: h(QuestionCircleFilled),
+              },
+              [h("a", { innerHTML: " 驳回 " })]
+            ),
+            h(
+              Popconfirm,
+              {
+                okText: "确定",
+                cancelText: "取消",
+                title: "解除申请",
+                description: "确认解除吗?",
+                onConfirm: () => changeStatus(value.record.id, "unbind"),
+                icon: h(QuestionCircleFilled),
+              },
+              [h("a", { innerHTML: " 解除 " })]
+            ),
+          ])
+        : "done";
+    },
   },
 ];
 
@@ -257,6 +262,8 @@ function handleChange(pageNo: number, pageSize: number) {
 
 // 搜索
 async function searchBtn(values: SearchBooking) {
+  console.log("values", values);
+
   const res = await bookingList(values, pageNo, pageSize);
 
   const { data } = res.data;
@@ -292,6 +299,10 @@ async function changeStatus(id: number, status: "apply" | "reject" | "unbind") {
 const formRef = ref<FormInstance>();
 function handelReset() {
   formRef.value?.resetFields();
+  searchBtn(searchBooking.value);
+}
+
+function handleSearch() {
   searchBtn(searchBooking.value);
 }
 </script>

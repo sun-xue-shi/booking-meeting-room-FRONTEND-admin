@@ -14,6 +14,7 @@
         :label-col="{ span: 6 }"
         :wrapper-col="{ span: 15 }"
         layout="r"
+        autocomplete="off"
       >
         <FormItem
           label="会议室名称"

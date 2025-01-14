@@ -7,3 +7,11 @@ export async function freezeUser(id: number) {
     },
   });
 }
+
+export async function unFreezeUser(id: number) {
+  return await axiosInstance.get("/user/unFreeze", {
+    params: {
+      id,
+    },
+  });
+}

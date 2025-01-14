@@ -59,7 +59,7 @@ import {
 
 import { getURL } from "@/utils/getUrl";
 import { userSearch } from "@/service/user_manage/list";
-import { freezeUser } from "@/service/user_manage/freeze";
+import { freezeUser, unFreezeUser } from "@/service/user_manage/freeze";
 import { formatUTC } from "@/utils/format";
 
 interface SearchUser {
@@ -136,13 +136,21 @@ const columns: TableColumnsType<SearchResult> = [
     customRender: (value) => {
       let id = value.record.id;
 
-      return h(Button, {
-        onClick: () => {
-          handleFreeze(id as number);
-        },
-        innerHTML: "冻结",
-        type: "link",
-      });
+      return value.record.is_frozen
+        ? h(Button, {
+            onClick: () => {
+              handleunFreeze(id as number);
+            },
+            innerHTML: "解冻",
+            type: "link",
+          })
+        : h(Button, {
+            onClick: () => {
+              handleFreeze(id as number);
+            },
+            innerHTML: "冻结",
+            type: "link",
+          });
     },
   },
 ];
@@ -164,6 +172,19 @@ async function handleFreeze(id: number) {
 
   if (code === 201 || code === 200) {
     message.success("成功冻结");
+    searchBtn(searchUser.value);
+  } else {
+    message.error(data || "系统繁忙,请稍后再试");
+  }
+}
+
+async function handleunFreeze(id: number) {
+  const res = await unFreezeUser(id);
+
+  const { code, data } = res.data;
+
+  if (code === 201 || code === 200) {
+    message.success("成功解冻");
     searchBtn(searchUser.value);
   } else {
     message.error(data || "系统繁忙,请稍后再试");

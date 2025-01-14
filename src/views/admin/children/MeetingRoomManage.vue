@@ -1,7 +1,12 @@
 <template>
   <div class="room-container">
     <div class="search">
-      <Form :model="searchMeetingRoom" @finish="searchBtn" layout="inline">
+      <Form
+        :model="searchMeetingRoom"
+        @finish="searchBtn"
+        layout="inline"
+        ref="formRef"
+      >
         <FormItem label="会议室名称" name="name">
           <Input :maxlength="20" v-model:value="searchMeetingRoom.name" />
         </FormItem>
@@ -159,22 +164,22 @@ const columns: TableColumnsType<MeetingRoomSearchResult> = [
     customRender: (value) => formatUTC(value.record.updateTime),
     align: "center",
   },
+  // {
+  //   title: "预定状态",
+  //   dataIndex: "isBooked",
+  //   align: "center",
+  //   customRender: (value) => {
+  //     if (value.record.isBooked) {
+  //       return h(Badge, { status: "error", text: "已被预订" });
+  //     } else {
+  //       return h(Badge, { status: "success", text: "可预订" });
+  //     }
+  //   },
+  // },
   {
-    title: "预定状态",
-    dataIndex: "isBooked",
+    title: "操作",
     align: "center",
-    customRender: (value) => {
-      if (value.record.isBooked) {
-        return h(Badge, { status: "error", text: "已被预订" });
-      } else {
-        return h(Badge, { status: "success", text: "可预订" });
-      }
-    },
-  },
-  {
-    title: "删除",
-    align: "center",
-    customRender: (value) =>
+    customRender: (value) => [
       h(
         Popconfirm,
         {
@@ -187,18 +192,15 @@ const columns: TableColumnsType<MeetingRoomSearchResult> = [
         },
         [h("a", { innerHTML: "删除" })]
       ),
-  },
-  {
-    title: "更新",
-    align: "center",
-    customRender: (value) =>
       h("a", {
         innerHTML: "修改",
         onClick: () => {
           updateId.value = value.record.id;
           isUpdateOpen.value = true;
         },
+        style: { marginLeft: "8px" }, // 添加一些间距
       }),
+    ],
   },
 ];
 
