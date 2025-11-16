@@ -5,63 +5,61 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      redirect: "/login",
+      redirect: "/home",
     },
     {
-      path: "/main",
-      component: () => import("@/views/admin/AdminMain.vue"),
-      children: [
-        {
-          path: "/show_menu",
-          component: () => import("@/views/admin/AdminMenu.vue"),
-          children: [
-            {
-              path: "user_manage",
-              component: () => import("@/views/admin/children/UserMessage.vue"),
-            },
-            {
-              path: "booking_manage",
-              component: () =>
-                import("@/views/admin/children/BookingManage.vue"),
-            },
-            {
-              path: "meetingroom_manage",
-              component: () =>
-                import("@/views/admin/children/MeetingRoomManage.vue"),
-            },
-            {
-              path: "statistics",
-              component: () =>
-                import("@/views/admin/children/StatisticsSum.vue"),
-            },
-          ],
-        },
-        {
-          path: "/update_menu",
-          component: () => import("@/views/update/UpdateMenu.vue"),
-          children: [
-            {
-              path: "info",
-              component: () => import("@/views/update/children/UpdateInfo.vue"),
-            },
-            {
-              path: "password",
-              component: () =>
-                import("@/views/update/children/UpdatePassword.vue"),
-            },
-          ],
-        },
-      ],
+      path: "/home",
+      component: () => import("@/views/Home.vue"),
+    },
+    {
+      path: "/ip-diagnosis",
+      component: () => import("@/views/IpDiagnosis.vue"),
+    },
+    {
+      path: "/learning-center",
+      component: () => import("@/views/LearningCenter.vue"),
+    },
+    {
+      path: "/service-operation",
+      component: () => import("@/views/ServiceOperation.vue"),
+    },
+    {
+      path: "/business-connection",
+      component: () => import("@/views/BusinessConnection.vue"),
+    },
+    {
+      path: "/community",
+      component: () => import("@/views/Community.vue"),
     },
     {
       path: "/login",
-      component: () => import("@/views/admin/AdminLogin.vue"),
+      component: () => import("@/views/Login.vue"),
     },
+    
     {
       path: "/:pathMatch(.*)",
       component: () => import("@/views/NotFound.vue"),
     },
   ],
 });
+
+// 路由守卫
+defineRouteGuard();
+
+function defineRouteGuard() {
+  router.beforeEach((to, from, next) => {
+    // 需要登录的页面
+    if (to.meta.requiresAuth) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        next();
+      } else {
+        next('/login');
+      }
+    } else {
+      next();
+    }
+  });
+}
 
 export default router;
