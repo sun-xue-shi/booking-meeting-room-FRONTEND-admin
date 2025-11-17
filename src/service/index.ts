@@ -3,7 +3,7 @@ import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:3005/",
+  baseURL: "/api",
   timeout: 5000,
 });
 
