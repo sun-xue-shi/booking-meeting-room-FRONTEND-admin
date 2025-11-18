@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import Login from "./views/Login.vue";
 import Register from "./views/Register.vue";
 import ForgotPassword from "./views/ForgotPassword.vue";
 import { Dropdown, Menu, MenuItem } from "ant-design-vue";
 import type { MenuProps } from "ant-design-vue";
+import { getUserInfo } from "@/service/common/api";
 
 const router = useRouter();
+const route = useRoute();
 const activeKey = ref("home");
 
 // 用户信息状态
@@ -27,9 +29,32 @@ const showUserDropdown = ref(false);
 const handleNavClick = (key: string) => {
   if (key === "login") {
     showLoginModal.value = true;
-  } else {
+  } else if (key === "home") {
+    // 首页可以直接访问
     activeKey.value = key;
     router.push(`/${key}`);
+  } else {
+    // 非首页需要检查登录状态
+    if (!isLoggedIn.value) {
+      // 未登录，显示登录弹窗并阻止跳转
+      showLoginModal.value = true;
+      console.log(`用户尝试访问${key}页面，但未登录，显示登录弹窗`);
+    } else {
+      // 已登录，允许跳转
+      activeKey.value = key;
+      router.push(`/${key}`);
+    }
+  }
+};
+
+// 根据当前路由路径设置激活的tab
+const setActiveTab = () => {
+  const path = route.path;
+  if (path === "/" || path === "/home") {
+    activeKey.value = "home";
+  } else {
+    // 移除路径中的斜杠，得到tab key
+    activeKey.value = path.substring(1);
   }
 };
 
@@ -66,22 +91,41 @@ const closeForgotPasswordModal = () => {
   showForgotPasswordModal.value = false;
 };
 
-// 检查用户登录状态
-const checkLoginStatus = () => {
+// 检查登录状态
+const checkLoginStatus = async () => {
   const token = localStorage.getItem("access_token");
-  const userInfoStr = localStorage.getItem("user_info");
-
-  if (token && userInfoStr) {
+  if (token) {
     isLoggedIn.value = true;
+
+    // 获取用户信息并打印
     try {
-      const parsedUserInfo = JSON.parse(userInfoStr);
-      userInfo.value.username = parsedUserInfo.username;
-      userInfo.value.nickName =
-        parsedUserInfo.nickName || parsedUserInfo.username;
-    } catch (e) {
-      // 解析失败时使用默认值
-      userInfo.value.username = "用户";
-      userInfo.value.nickName = "用户";
+      const res = await getUserInfo();
+      if (res.data.code === 200 || res.data.code === 201) {
+        const userData = res.data.data;
+        console.log("用户信息获取成功:", userData);
+
+        // 更新用户信息
+        userInfo.value.username = userData.username || "用户";
+        userInfo.value.nickName = userData.nickName || "昵称";
+      } else {
+        console.log("获取用户信息失败:", res.data.data);
+        // 使用localStorage中的用户信息作为备选
+        const localUserInfo = localStorage.getItem("user_info");
+        if (localUserInfo) {
+          const parsedInfo = JSON.parse(localUserInfo);
+          userInfo.value.username = parsedInfo.username || "用户";
+          userInfo.value.nickName = parsedInfo.nickName || "昵称";
+        }
+      }
+    } catch (error) {
+      console.log("获取用户信息出错:", error);
+      // 使用localStorage中的用户信息作为备选
+      const localUserInfo = localStorage.getItem("user_info");
+      if (localUserInfo) {
+        const parsedInfo = JSON.parse(localUserInfo);
+        userInfo.value.username = parsedInfo.username || "用户";
+        userInfo.value.nickName = parsedInfo.nickName || "昵称";
+      }
     }
   } else {
     isLoggedIn.value = false;
@@ -92,10 +136,8 @@ const checkLoginStatus = () => {
 
 // 退出登录
 const logout = () => {
-  // 清除本地存储的用户信息
+  // 清除本地存储的token
   localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
-  localStorage.removeItem("user_info");
 
   // 更新登录状态
   isLoggedIn.value = false;
@@ -108,9 +150,28 @@ const logout = () => {
 };
 
 // 处理登录成功事件
-const handleLoginSuccess = (userInfo: any) => {
+const handleLoginSuccess = async (loginUserInfo: any) => {
   isLoggedIn.value = true;
-  userInfo.value = userInfo;
+  userInfo.value = loginUserInfo;
+
+  // 登录成功后立即获取并打印最新的用户信息
+  try {
+    const res = await getUserInfo();
+    if (res.data.code === 200 || res.data.code === 201) {
+      const userData = res.data.data;
+      console.log("登录成功后获取的用户信息:", userData);
+
+      // 更新用户信息为最新数据
+      userInfo.value.username =
+        userData.username || loginUserInfo.username || "用户";
+      userInfo.value.nickName =
+        userData.nickName || loginUserInfo.nickName || "昵称";
+    } else {
+      console.log("登录成功后获取用户信息失败:", res.data.data);
+    }
+  } catch (error) {
+    console.log("登录成功后获取用户信息出错:", error);
+  }
 };
 
 // 下拉菜单点击处理
@@ -123,13 +184,15 @@ const handleUserMenuClick: MenuProps["onClick"] = ({ key }) => {
   }
 };
 
-// 组件挂载时检查登录状态
+// 组件挂载时检查登录状态并设置当前激活的tab
 onMounted(() => {
   checkLoginStatus();
+  setActiveTab();
 
-  // 监听路由变化，检查登录状态
+  // 监听路由变化，检查登录状态并同步tab状态
   router.afterEach(() => {
     checkLoginStatus();
+    setActiveTab();
   });
 });
 </script>
@@ -140,7 +203,7 @@ onMounted(() => {
     <header class="navbar">
       <div class="navbar-content">
         <div class="logo" style="display: flex; align-items: center; gap: 8px">
-          <img src="@/assets/logo3.png" alt="公司logo" style="height: 80px" />
+          <img src="@/assets/logo4.png" alt="公司logo" style="height: 80px" />
           <span
             style="
               font-size: 28px;
@@ -299,7 +362,7 @@ body {
 /* 主题色变量 */
 :root {
   --primary-color: #00219f;
-  --secondary-color: #FFD27;
+  --secondary-color: #ffd271;
   --text-color: #333;
   --bg-color: #f5f5f5;
   --white: #fff;
@@ -314,7 +377,7 @@ body {
 
 /* 导航栏样式 */
 .navbar {
-  background-color: var(--white);
+  background-color: var(--secondary-color);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -346,17 +409,21 @@ body {
   padding: 8px 16px;
   cursor: pointer;
   transition: all 0.3s;
-  color: var(--text-color);
+  color: var(--primary-color);
+  font-weight: 500;
 }
 
 .nav-tab:hover {
   color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 .nav-tab.active {
   color: var(--primary-color);
-  border-bottom: 2px solid var(--primary-color);
-  font-weight: 500;
+  background-color: rgba(239, 228, 161, 0.9);
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 .login-btn {
@@ -366,11 +433,15 @@ body {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .login-btn:hover {
   background-color: #001a80;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* 用户信息下拉菜单样式 */
@@ -387,11 +458,15 @@ body {
   color: white;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .user-info:hover {
   background-color: #001a80;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .username {
@@ -421,10 +496,9 @@ body {
 /* 主要内容区域 */
 .main-content {
   flex: 1;
-  background-color: white;
+  background-color: var(--secondary-color);
   width: 100%;
   margin: 0 auto;
-  /* padding: 40px 20px; */
 }
 
 /* 页脚样式 */
@@ -432,7 +506,6 @@ body {
   background-color: #f5f5f5;
   color: #333;
   padding: 40px 0;
-  /* margin-top: 60px; */
 }
 
 .footer-content {

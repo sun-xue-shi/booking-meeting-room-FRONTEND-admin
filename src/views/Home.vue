@@ -152,6 +152,22 @@ const swiperOptions = {
   },
 };
 
+// 滚动到服务区域
+const scrollToServices = () => {
+  const servicesSection = document.querySelector(".services-section");
+  if (servicesSection) {
+    servicesSection.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
+// 滚动到案例区域
+const scrollToCases = () => {
+  const casesSection = document.querySelector(".cases-section");
+  if (casesSection) {
+    casesSection.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
 // 示例数据 - 行业资讯
 const news = [
   {
@@ -211,82 +227,325 @@ const news = [
 
 <template>
   <div class="home-container">
-    <!-- 行业资讯 - Swiper轮播图形式 -->
-    <section class="section news-section">
-      <div class="news-carousel-container">
-        <div class="carousel-main-content">
-          <div class="carousel-block">
-            <div class="carousel-header">
-              <h3>行业资讯</h3>
-            </div>
-            <Swiper
-              class="news-swiper"
-              :modules="swiperOptions.modules"
-              :loop="swiperOptions.loop"
-              :autoplay="swiperOptions.autoplay"
-              :pagination="swiperOptions.pagination"
-            >
-              <SwiperSlide
-                v-for="item in news"
-                :key="item.id"
-                class="carousel-slide"
-              >
-                <div class="carousel-content">
-                  <div class="carousel-image">
-                    <img
-                      v-for="(image, index) in item.images"
-                      :key="index"
-                      :src="image"
-                      alt="轮播图片"
-                      class="carousel-img"
-                    />
-                  </div>
-                  <div class="carousel-info">
-                    <h3 class="carousel-title">{{ item.title }}</h3>
-                    <p class="carousel-description">{{ item.description }}</p>
-                  </div>
-                </div>
-              </SwiperSlide>
-              <!-- Swiper分页指示器 -->
-              <div class="swiper-pagination"></div>
-            </Swiper>
-          </div>
+    <!-- 新增英雄区域 - 突出主题色 -->
+    <section class="hero-section">
+      <div class="hero-ocean-background">
+        <svg
+          class="ocean-waves"
+          viewBox="0 0 1200 800"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <!-- 月亮渐变 -->
+            <radialGradient id="moonGradient" cx="30%" cy="30%" r="40%">
+              <stop
+                offset="0%"
+                style="stop-color: #ffffff; stop-opacity: 0.9"
+              />
+              <stop
+                offset="50%"
+                style="stop-color: var(--secondary-color); stop-opacity: 0.7"
+              />
+              <stop
+                offset="100%"
+                style="stop-color: var(--primary-color); stop-opacity: 0.3"
+              />
+            </radialGradient>
 
-          <!-- 最新活动悬浮卡片 -->
-          <div class="latest-activities-card">
-            <h3 class="activities-title">最新活动</h3>
-            <div class="activities-list">
-              <div class="activity-item">
-                <span class="activity-icon">📱</span>
-                <span class="activity-text"
-                  >"新媒体+文旅" （货车司机目的地一日游/记录一日三餐）</span
-                >
-              </div>
-              <div class="activity-item">
-                <span class="activity-icon">🎬</span>
-                <span class="activity-text"
-                  >短视频知识问答大赛、街访（你喜欢的猪肉做法/认识猪的品种）</span
-                >
-              </div>
-              <div class="activity-item">
-                <span class="activity-icon">🎭</span>
-                <span class="activity-text"
-                  >沉浸式体验活动 (参与素人沉浸式工作场景、和创作过程)</span
-                >
-              </div>
-              <div class="activity-item">
-                <span class="activity-icon">🚀</span>
-                <span class="activity-text"
-                  >素人专属招募孵化营 （"平凡人设出道计划——素人IP
-                  21天孵化营"）</span
-                >
-              </div>
-            </div>
-            <div class="activities-footer">
-              <p>
-                提供免费基础培训，涵盖人设定位、短视频拍摄剪辑等课程，优秀者直接签约，还能获得流量扶持和专属运营团队。
-              </p>
-            </div>
+            <!-- 星星渐变 -->
+            <radialGradient id="starGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" style="stop-color: #ffffff; stop-opacity: 1" />
+              <stop
+                offset="70%"
+                style="stop-color: var(--secondary-color); stop-opacity: 0.8"
+              />
+              <stop
+                offset="100%"
+                style="stop-color: transparent; stop-opacity: 0"
+              />
+            </radialGradient>
+
+            <!-- 波浪渐变1 -->
+            <linearGradient
+              id="waveGradient1"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop
+                offset="0%"
+                style="stop-color: var(--primary-color); stop-opacity: 0.6"
+              />
+              <stop
+                offset="50%"
+                style="stop-color: var(--secondary-color); stop-opacity: 0.4"
+              />
+              <stop
+                offset="100%"
+                style="stop-color: var(--primary-color); stop-opacity: 0.6"
+              />
+            </linearGradient>
+
+            <!-- 波浪渐变2 -->
+            <linearGradient
+              id="waveGradient2"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop
+                offset="0%"
+                style="stop-color: var(--secondary-color); stop-opacity: 0.5"
+              />
+              <stop
+                offset="50%"
+                style="stop-color: var(--primary-color); stop-opacity: 0.3"
+              />
+              <stop
+                offset="100%"
+                style="stop-color: var(--secondary-color); stop-opacity: 0.5"
+              />
+            </linearGradient>
+          </defs>
+
+          <!-- 背景 -->
+          <rect
+            width="1200"
+            height="800"
+            fill="url(#waveGradient1)"
+            opacity="0.05"
+          />
+
+          <!-- 月亮 -->
+          <circle
+            cx="900"
+            cy="160"
+            r="60"
+            fill="url(#moonGradient)"
+            opacity="0.8"
+          >
+            <animate
+              attributeName="opacity"
+              values="0.8;1;0.8"
+              dur="4s"
+              repeatCount="indefinite"
+            />
+          </circle>
+
+          <!-- 月亮光晕 -->
+          <circle
+            cx="900"
+            cy="160"
+            r="90"
+            fill="url(#starGradient)"
+            opacity="0.3"
+          >
+            <animate
+              attributeName="r"
+              values="90;105;90"
+              dur="3s"
+              repeatCount="indefinite"
+            />
+            <animate
+              attributeName="opacity"
+              values="0.3;0.5;0.3"
+              dur="3s"
+              repeatCount="indefinite"
+            />
+          </circle>
+
+          <!-- 星星 -->
+          <g class="stars">
+            <!-- 大星星 -->
+            <g transform="translate(150, 120)">
+              <path
+                d="M0,-15 L4,-4 L15,-4 L6,2 L10,13 L0,7 L-10,13 L-6,2 L-15,-4 L-4,-4 Z"
+                fill="url(#starGradient)"
+                opacity="0.9"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  values="0;15;0"
+                  dur="5s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.9;1;0.9"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              </path>
+            </g>
+
+            <!-- 中星星 -->
+            <g transform="translate(300, 200)">
+              <path
+                d="M0,-10 L3,-2 L10,-2 L4,1 L7,9 L0,5 L-7,9 L-4,1 L-10,-2 L-3,-2 Z"
+                fill="url(#starGradient)"
+                opacity="0.8"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  values="0;-10;0"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+              </path>
+            </g>
+
+            <!-- 小星星 -->
+            <g transform="translate(500, 100)">
+              <path
+                d="M0,-6 L2,-1 L6,-1 L2.5,1 L4,5 L0,3 L-4,5 L-2.5,1 L-6,-1 L-2,-1 Z"
+                fill="url(#starGradient)"
+                opacity="0.7"
+              >
+                <animateTransform
+                  attributeName="transform"
+                  type="rotate"
+                  values="0;20;0"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.7;1;0.7"
+                  dur="2.5s"
+                  repeatCount="indefinite"
+                />
+              </path>
+            </g>
+
+            <!-- 更多小星星 -->
+            <g transform="translate(700, 180)">
+              <circle r="3" fill="#ffffff" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="1.5s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+
+            <g transform="translate(1000, 240)">
+              <circle r="2" fill="var(--secondary-color)" opacity="0.9">
+                <animate
+                  attributeName="opacity"
+                  values="0.9;1;0.9"
+                  dur="2s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+
+            <g transform="translate(1100, 120)">
+              <circle r="2.5" fill="#ffffff" opacity="0.7">
+                <animate
+                  attributeName="opacity"
+                  values="0.7;1;0.7"
+                  dur="1.8s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+
+            <g transform="translate(250, 240)">
+              <circle r="2" fill="var(--secondary-color)" opacity="0.8">
+                <animate
+                  attributeName="opacity"
+                  values="0.8;1;0.8"
+                  dur="2.2s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
+          </g>
+
+          <!-- 第一层波浪 - 边界更明显 -->
+          <path
+            d="M0,500 C200,450 400,550 600,500 C800,460 1000,540 1200,500 L1200,800 L0,800 Z"
+            fill="url(#waveGradient1)"
+            stroke="var(--primary-color)"
+            stroke-width="2"
+            opacity="0.8"
+          >
+            <animate
+              attributeName="d"
+              values="M0,500 C200,450 400,550 600,500 C800,460 1000,540 1200,500 L1200,800 L0,800 Z;
+                             M0,500 C200,550 400,450 600,500 C800,540 1000,460 1200,500 L1200,800 L0,800 Z;
+                             M0,500 C200,450 400,550 600,500 C800,460 1000,540 1200,500 L1200,800 L0,800 Z"
+              dur="6s"
+              repeatCount="indefinite"
+            />
+          </path>
+
+          <!-- 第二层波浪 - 边界更明显 -->
+          <path
+            d="M0,600 C150,550 350,650 550,600 C750,560 950,640 1200,600 L1200,800 L0,800 Z"
+            fill="url(#waveGradient2)"
+            stroke="var(--secondary-color)"
+            stroke-width="1.5"
+            opacity="0.6"
+          >
+            <animate
+              attributeName="d"
+              values="M0,600 C150,550 350,650 550,600 C750,560 950,640 1200,600 L1200,800 L0,800 Z;
+                             M0,600 C150,650 350,550 550,600 C750,640 950,560 1200,600 L1200,800 L0,800 Z;
+                             M0,600 C150,550 350,650 550,600 C750,560 950,640 1200,600 L1200,800 L0,800 Z"
+              dur="8s"
+              repeatCount="indefinite"
+            />
+          </path>
+
+          <!-- 第三层波浪 - 边界更明显 -->
+          <path
+            d="M0,680 C100,630 250,730 450,680 C650,640 850,720 1200,680 L1200,800 L0,800 Z"
+            fill="url(#waveGradient1)"
+            stroke="var(--primary-color)"
+            stroke-width="1"
+            opacity="0.4"
+          >
+            <animate
+              attributeName="d"
+              values="M0,680 C100,630 250,730 450,680 C650,640 850,720 1200,680 L1200,800 L0,800 Z;
+                             M0,680 C100,730 250,630 450,680 C650,720 850,640 1200,680 L1200,800 L0,800 Z;
+                             M0,680 C100,630 250,730 450,680 C650,640 850,720 1200,680 L1200,800 L0,800 Z"
+              dur="10s"
+              repeatCount="indefinite"
+            />
+          </path>
+
+          <!-- 水面反光效果已移除 -->
+        </svg>
+      </div>
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1 class="hero-title">
+            打造属于你的
+            <span class="highlight-primary">IP品牌</span>
+          </h1>
+          <p class="hero-subtitle">
+            专业素人IP孵化服务，让普通人也能成为网红达人
+          </p>
+          <div class="hero-buttons">
+            <button class="btn btn-primary hero-btn" @click="scrollToServices">
+              立即开始
+            </button>
+            <button class="btn btn-outline hero-btn" @click="scrollToCases">
+              查看案例
+            </button>
           </div>
         </div>
       </div>
@@ -327,11 +586,6 @@ const news = [
           </div>
         </div>
       </div>
-      <!-- <div class="section-more">
-        <button class="more-btn" @click="navigateToDetail('cases')">
-          查看全部案例
-        </button>
-      </div> -->
     </section>
 
     <!-- 服务套餐 -->
@@ -374,9 +628,6 @@ const news = [
             <p class="service-audience">{{ service.audience }}</p>
             <p class="service-cost-info">{{ service.costInfo }}</p>
           </div>
-          <!-- <button class="service-btn" @click="navigateToDetail('services')">
-            选择套餐
-          </button> -->
         </div>
       </div>
 
@@ -725,6 +976,87 @@ const news = [
         </div>
       </div>
     </section>
+
+    <!-- 行业资讯 - Swiper轮播图形式 -->
+    <section class="section news-section">
+      <div class="news-carousel-container">
+        <div class="carousel-main-content">
+          <div class="carousel-block">
+            <div class="carousel-header">
+              <h3>行业资讯</h3>
+            </div>
+            <Swiper
+              class="news-swiper"
+              :modules="swiperOptions.modules"
+              :loop="swiperOptions.loop"
+              :autoplay="swiperOptions.autoplay"
+              :pagination="swiperOptions.pagination"
+            >
+              <SwiperSlide
+                v-for="item in news"
+                :key="item.id"
+                class="carousel-slide"
+              >
+                <div class="carousel-content">
+                  <div class="carousel-image">
+                    <img
+                      v-for="(image, index) in item.images"
+                      :key="index"
+                      :src="image"
+                      alt="轮播图片"
+                      class="carousel-img"
+                    />
+                  </div>
+                  <div class="carousel-info">
+                    <h3 class="carousel-title">{{ item.title }}</h3>
+                    <p class="carousel-description">{{ item.description }}</p>
+                  </div>
+                </div>
+              </SwiperSlide>
+              <!-- Swiper分页指示器 -->
+              <div class="swiper-pagination"></div>
+            </Swiper>
+          </div>
+
+          <!-- 最新活动悬浮卡片 -->
+          <div class="latest-activities-card">
+            <h3 class="activities-title">最新活动</h3>
+            <div class="activities-list">
+              <div class="activity-item">
+                <span class="activity-icon">📱</span>
+                <span class="activity-text"
+                  >"新媒体+文旅" （货车司机目的地一日游/记录一日三餐）</span
+                >
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">🎬</span>
+                <span class="activity-text"
+                  >短视频知识问答大赛、街访（你喜欢的猪肉做法/认识猪的品种）</span
+                >
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">🎭</span>
+                <span class="activity-text"
+                  >沉浸式体验活动 (参与素人沉浸式工作场景、和创作过程)</span
+                >
+              </div>
+              <div class="activity-item">
+                <span class="activity-icon">🚀</span>
+                <span class="activity-text"
+                  >素人专属招募孵化营 （"平凡人设出道计划——素人IP
+                  21天孵化营"）</span
+                >
+              </div>
+            </div>
+            <div class="activities-footer">
+              <p>
+                提供免费基础培训，涵盖人设定位、短视频拍摄剪辑等课程，优秀者直接签约，还能获得流量扶持和专属运营团队。
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -734,46 +1066,235 @@ const news = [
   padding-bottom: 60px;
 }
 
+/* 英雄区域样式 */
+.hero-section {
+  position: relative;
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #ffda4d 100%);
+  padding: 100px 0 120px;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.hero-text {
+  z-index: 2;
+  /* background: rgba(255, 255, 255, 0.95); */
+  padding: 40px;
+  backdrop-filter: blur(1px);
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.highlight-primary {
+  background: linear-gradient(45deg, var(--primary-color), #0033cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--primary-color);
+  margin-bottom: 40px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.hero-btn {
+  padding: 16px 32px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 微光海动画样式 */
+.hero-ocean-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.ocean-waves {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+  .hero-text {
+    padding: 30px;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-text {
+    padding: 20px;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.hero-wave svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 120px;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 60px 0 80px;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hero-ocean {
+    height: 300px;
+    margin-top: 30px;
+  }
+}
+
 .section {
   padding: 40px 0;
   position: relative;
 }
 
 .section:nth-child(even) {
-  background-color: white;
+  background-color: var(--secondary-color);
 }
 
 .section:nth-child(odd) {
-  background-color: white;
+  background-color: var(--secondary-color);
 }
 
 /* 通用标题样式 */
 .section-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  position: relative;
 }
 
 .section-header h2 {
   font-size: 36px;
   color: var(--primary-color);
+  position: relative;
+  display: inline-block;
+  padding: 0 20px;
+  margin-bottom: 20px;
+}
+
+.section-header h2::before {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 40px;
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border-radius: 3px;
 }
 
 .section-header h2::after {
   content: "";
   position: absolute;
-  bottom: -8px;
+  bottom: -15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background-color: var(--secondary-color);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  border-radius: 2px;
 }
 
 .section-divider {
-  width: 80px;
+  width: 100px;
   height: 4px;
-  background-color: var(--secondary-color);
-  margin: 16px auto 0;
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+  margin: 20px auto 0;
+  border-radius: 2px;
 }
 
 /* 查看更多按钮 */
@@ -952,18 +1473,20 @@ const news = [
 
 .service-card {
   background-color: white;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 40px;
   text-align: center;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  border: 2px solid transparent;
 }
 
 .service-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+  border-color: var(--secondary-color);
 }
 
 /* 白银主题样式 */
@@ -1017,19 +1540,26 @@ const news = [
   position: absolute;
   top: 0;
   right: 0;
-  background-color: var(--secondary-color);
+  background: linear-gradient(135deg, var(--secondary-color), #ffda4d);
   color: var(--primary-color);
   padding: 8px 24px;
   font-weight: bold;
   font-size: 14px;
   transform: rotate(45deg) translate(30px, -10px);
   transform-origin: top right;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .service-name {
   font-size: 24px;
   color: var(--primary-color);
   margin-bottom: 8px;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--primary-color), #0033cc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .service-tag {
@@ -1046,8 +1576,9 @@ const news = [
 .service-price {
   font-size: 32px;
   font-weight: bold;
-  color: var(--text-color);
+  color: var(--secondary-color);
   margin-bottom: 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .service-features {
@@ -1072,29 +1603,33 @@ const news = [
 
 .service-btn {
   padding: 12px 36px;
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), #0033cc);
   color: white;
   border: none;
   border-radius: 30px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 33, 159, 0.3);
 }
 
 .service-btn:hover {
-  background-color: #001a80;
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 33, 159, 0.2);
+  background: linear-gradient(135deg, #001a80, #002db3);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 33, 159, 0.4);
 }
 
 .service-card.popular .service-btn {
-  background-color: var(--secondary-color);
+  background: linear-gradient(135deg, var(--secondary-color), #ffda4d);
   color: var(--primary-color);
+  box-shadow: 0 4px 15px rgba(255, 210, 113, 0.4);
 }
 
 .service-card.popular .service-btn:hover {
-  background-color: #ffda4d;
+  background: linear-gradient(135deg, #ffda4d, #ffe066);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(255, 210, 113, 0.5);
 }
 
 /* 最新活动样式 */
@@ -1122,12 +1657,13 @@ const news = [
 }
 
 .activity-date {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), #0033cc);
   color: white;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 16px 12px;
   text-align: center;
   min-width: 80px;
+  box-shadow: 0 4px 12px rgba(0, 33, 159, 0.3);
 }
 
 .date-day {
@@ -1666,12 +2202,13 @@ const news = [
 
 /* IP服务流程样式 */
 .process-container {
-  background-color: #f9f9ff;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e6edff 100%);
   padding: 30px 40px 0px 150px;
+  margin: 0 20px;
   border-radius: 16px;
   /* margin-left: 20px; */
   overflow: hidden;
-  margin-bottom: 0;
+  /* margin-bottom: 0; */
 }
 
 .process-section {
