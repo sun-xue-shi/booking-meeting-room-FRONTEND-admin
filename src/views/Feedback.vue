@@ -72,7 +72,7 @@ import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import { Form, FormItem, Input, Textarea, Button } from "ant-design-vue";
-import { submitFeedback } from "@/service";
+import { submitFeedback } from "@/service/feedback";
 
 // 定义 props
 const props = defineProps<{
