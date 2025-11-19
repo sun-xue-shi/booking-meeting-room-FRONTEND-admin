@@ -91,7 +91,7 @@
       <div class="cases-container">
         <div class="case-card">
           <div class="case-image">
-            <img src="@/assets/logo1.png" alt="案例图片" />
+            <img src="@/assets/logo.png" alt="案例图片" />
           </div>
           <div class="case-content">
             <h3>美食博主IP打造</h3>
@@ -111,7 +111,7 @@
         
         <div class="case-card">
           <div class="case-image">
-            <img src="@/assets/logo2.png" alt="案例图片" />
+            <img src="@/assets/logo.png" alt="案例图片" />
           </div>
           <div class="case-content">
             <h3>旅游达人品牌合作</h3>

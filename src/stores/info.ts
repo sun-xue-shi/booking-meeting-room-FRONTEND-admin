@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { getUserInfo } from "@/service/update/update";
+import { getUserInfo } from "@/service/common/api";
 import { message } from "ant-design-vue";
 import { updateInfoCaptcha } from "@/service/email/captcha";
 
@@ -9,6 +9,10 @@ export interface UpdateUserInfo {
   nickName: string;
   email: string;
   captcha: string;
+  industry: string;      // 行业
+  douyinAccount: string; // 抖音账号
+  phone: string;         // 联系方式（手机号）
+  targetNeeds: string[]; // 目标需求
 }
 
 export const useInfoStore = defineStore("info", () => {
@@ -21,6 +25,10 @@ export const useInfoStore = defineStore("info", () => {
     nickName: "",
     email: "",
     captcha: "",
+    industry: "",
+    douyinAccount: "",
+    phone: "",
+    targetNeeds: [],
   });
 
   async function getLoginInfo() {
@@ -29,6 +37,10 @@ export const useInfoStore = defineStore("info", () => {
     updateUserInfo.value.email = data.email;
     updateUserInfo.value.headPic = data.headPic;
     updateUserInfo.value.nickName = data.nickName;
+    updateUserInfo.value.industry = data.industry || "";
+    updateUserInfo.value.douyinAccount = data.douyinAccount || "";
+    updateUserInfo.value.phone = data.phone || "";
+    updateUserInfo.value.targetNeeds = data.targetNeeds ? data.targetNeeds.split(',') : [];
   }
 
   function timeCutdown() {
@@ -44,7 +56,8 @@ export const useInfoStore = defineStore("info", () => {
 
   async function sendCaptcha() {
     if (!updateUserInfo.value.email) {
-      return message.warn("请填写邮箱地址!");
+      message.warn("请填写邮箱地址!");
+      return;
     } else {
       isLoading.value = true;
       const res = await updateInfoCaptcha();
@@ -59,8 +72,10 @@ export const useInfoStore = defineStore("info", () => {
           isSend.value = false;
         }, 1000 * 30);
         timeCutdown();
+        return res;
       } else {
         message.error(data || "系统繁忙,请稍后再试");
+        return res;
       }
     }
   }

@@ -16,10 +16,6 @@ export async function getIpScore(score: number) {
   });
 }
 
-export async function getIpDiagnosis(username: string) {
-  return await axiosInstance.get("/user/diagnosis", {
-    params: {
-      username,
-    },
-  });
+export async function getIpDiagnosis() {
+  return await axiosInstance.get("/user/diagnosis");
 }

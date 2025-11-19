@@ -4,6 +4,7 @@ import { useRouter, useRoute } from "vue-router";
 import Login from "./views/Login.vue";
 import Register from "./views/Register.vue";
 import ForgotPassword from "./views/ForgotPassword.vue";
+import UpdateInfo from "./views/UpdateInfo.vue";
 import { Dropdown, Menu, MenuItem } from "ant-design-vue";
 import type { MenuProps } from "ant-design-vue";
 import { getUserInfo } from "@/service/common/api";
@@ -23,6 +24,7 @@ const userInfo = ref({
 const showLoginModal = ref(false);
 const showRegisterModal = ref(false);
 const showForgotPasswordModal = ref(false);
+const showUpdateInfoModal = ref(false);
 const showUserDropdown = ref(false);
 
 // 处理导航点击
@@ -89,6 +91,16 @@ const showForgotPassword = () => {
 // 关闭忘记密码弹窗
 const closeForgotPasswordModal = () => {
   showForgotPasswordModal.value = false;
+};
+
+// 显示个人信息弹窗
+const showUpdateInfo = () => {
+  showUpdateInfoModal.value = true;
+};
+
+// 关闭个人信息弹窗
+const closeUpdateInfoModal = () => {
+  showUpdateInfoModal.value = false;
 };
 
 // 检查登录状态
@@ -177,8 +189,8 @@ const handleLoginSuccess = async (loginUserInfo: any) => {
 // 下拉菜单点击处理
 const handleUserMenuClick: MenuProps["onClick"] = ({ key }) => {
   if (key === "profile") {
-    // 跳转到个人信息页面
-    router.push("/update/info");
+    // 显示个人信息弹窗
+    showUpdateInfo();
   } else if (key === "logout") {
     logout();
   }
@@ -203,21 +215,7 @@ onMounted(() => {
     <header class="navbar">
       <div class="navbar-content">
         <div class="logo" style="display: flex; align-items: center; gap: 8px">
-          <img src="@/assets/logo4.png" alt="公司logo" style="height: 80px" />
-          <span
-            style="
-              font-size: 28px;
-              font-weight: bold;
-              color: var(--primary-color);
-              font-family: &quot;Ma Shan Zheng&quot;, cursive,
-                &quot;STKaiti&quot;, &quot;KaiTi&quot;, serif;
-              text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-              letter-spacing: 2px;
-              transform: skew(-5deg);
-              display: inline-block;
-            "
-            >微光海</span
-          >
+          <img src="@/assets/logo.png" alt="公司logo" style="height: 150px" />
         </div>
         <nav class="nav-tabs">
           <div
@@ -283,7 +281,11 @@ onMounted(() => {
       <div class="footer-content">
         <div class="footer-main">
           <div class="footer-logo">
-            <img src="@/assets/logo3.png" alt="公司logo" class="logo-image" />
+            <img
+              src="@/assets/logo.png"
+              alt="公司logo"
+              class="logo-image"
+            />
           </div>
           <div class="footer-info">
             <p>© 2025 微光海网络科技有限公司. 保留所有权利.</p>
@@ -322,6 +324,13 @@ onMounted(() => {
     <ForgotPassword
       v-if="showForgotPasswordModal"
       @close="closeForgotPasswordModal"
+    />
+
+    <!-- 个人信息弹窗 -->
+    <UpdateInfo
+      v-if="showUpdateInfoModal"
+      :is-modal="true"
+      @close="closeUpdateInfoModal"
     />
   </div>
 </template>
@@ -552,7 +561,7 @@ body {
 }
 
 .logo-image {
-  width: 160px;
+  width: 200px;
   object-fit: contain;
 }
 

@@ -27,7 +27,11 @@ export function register(registerUser: RegisterUser) {
 }
 
 interface UpdateInfo {
+  industry: string;
+  douyinAccount: string;
+  phone: string;
   email: string;
+  targetNeeds: string;
   captcha: string;
 }
 

@@ -4,7 +4,29 @@ import { getIpSuggest, getIpDiagnosis, getIpScore } from "@/service/ip";
 import { message, Modal } from "ant-design-vue";
 
 // 问卷数据结构
-const questionnaire = reactive({
+// 定义问卷数据结构类型
+interface Question {
+  id: string;
+  text: string;
+  options: {
+    label: string;
+    value: string;
+  }[];
+}
+
+interface Dimension {
+  title: string;
+  questions: Question[];
+}
+
+interface Questionnaire {
+  dimension1: Dimension;
+  dimension2: Dimension;
+  dimension3: Dimension;
+  dimension4: Dimension;
+}
+
+const questionnaire = reactive<Questionnaire>({
   // IP基础属性维度
   dimension1: {
     title: "IP基础属性维度",
@@ -279,8 +301,31 @@ const currentQuestionIndex = ref(0);
 
 // 从localStorage恢复答题进度
 const loadProgressFromStorage = () => {
+  // 获取当前登录用户信息
+  const currentUserInfo = localStorage.getItem("user_info");
+  let currentUsername = "";
+  
+  if (currentUserInfo) {
+    try {
+      const user = JSON.parse(currentUserInfo);
+      currentUsername = user.username || "";
+    } catch (e) {
+      console.error("Failed to parse user info", e);
+    }
+  }
+
+  // 获取存储的答题进度和对应的用户名
   const savedAnswers = localStorage.getItem("ipDiagnosisAnswers");
   const savedIndex = localStorage.getItem("ipDiagnosisIndex");
+  const savedUsername = localStorage.getItem("ipDiagnosisUsername"); // 新增：存储用户名
+
+  // 检查用户名是否匹配
+  if (savedUsername && currentUsername && savedUsername !== currentUsername) {
+    console.log("用户名不匹配，不采用之前的答题进度");
+    // 用户名不匹配，清空现有的存储数据
+    clearProgressStorage();
+    return;
+  }
 
   if (savedAnswers) {
     try {
@@ -301,17 +346,33 @@ const loadProgressFromStorage = () => {
 
 // 保存答题进度到localStorage
 const saveProgressToStorage = () => {
+  // 保存答题进度
   localStorage.setItem("ipDiagnosisAnswers", JSON.stringify(userAnswers.value));
   localStorage.setItem(
     "ipDiagnosisIndex",
     currentQuestionIndex.value.toString()
   );
+  
+  // 新增：保存当前用户名，用于后续匹配检查
+  const currentUserInfo = localStorage.getItem("user_info");
+  if (currentUserInfo) {
+    try {
+      const user = JSON.parse(currentUserInfo);
+      const username = user.username || "";
+      if (username) {
+        localStorage.setItem("ipDiagnosisUsername", username);
+      }
+    } catch (e) {
+      console.error("Failed to parse user info when saving progress", e);
+    }
+  }
 };
 
 // 清除localStorage中的答题进度
 const clearProgressStorage = () => {
   localStorage.removeItem("ipDiagnosisAnswers");
   localStorage.removeItem("ipDiagnosisIndex");
+  localStorage.removeItem("ipDiagnosisUsername"); // 新增：清除用户名信息
 };
 
 // 检查用户已有的诊断结果
@@ -338,7 +399,7 @@ const checkExistingDiagnosis = async () => {
     }
 
     // 调用getIpDiagnosis接口
-    const response = await getIpDiagnosis(username);
+    const response = await getIpDiagnosis();
     console.log("获取用户诊断结果:", response);
 
     // 检查返回的数据格式
@@ -386,8 +447,9 @@ const hasExistingDiagnosis = ref(false);
 
 // 获取所有题目
 const allQuestions = computed(() => {
-  const questions = [];
-  for (const dimensionKey in questionnaire) {
+  const questions: Question[] = [];
+  const dimensionKeys = Object.keys(questionnaire) as (keyof Questionnaire)[];
+  for (const dimensionKey of dimensionKeys) {
     const dimension = questionnaire[dimensionKey];
     questions.push(...dimension.questions);
   }
