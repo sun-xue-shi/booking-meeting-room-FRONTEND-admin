@@ -5,6 +5,7 @@ import Login from "./views/Login.vue";
 import Register from "./views/Register.vue";
 import ForgotPassword from "./views/ForgotPassword.vue";
 import UpdateInfo from "./views/UpdateInfo.vue";
+import Feedback from "./views/Feedback.vue";
 import { Dropdown, Menu, MenuItem } from "ant-design-vue";
 import type { MenuProps } from "ant-design-vue";
 import { getUserInfo } from "@/service/common/api";
@@ -25,6 +26,7 @@ const showLoginModal = ref(false);
 const showRegisterModal = ref(false);
 const showForgotPasswordModal = ref(false);
 const showUpdateInfoModal = ref(false);
+const showFeedbackModal = ref(false);
 const showUserDropdown = ref(false);
 
 // 处理导航点击
@@ -101,6 +103,28 @@ const showUpdateInfo = () => {
 // 关闭个人信息弹窗
 const closeUpdateInfoModal = () => {
   showUpdateInfoModal.value = false;
+};
+
+// 显示问题反馈弹窗
+const showFeedback = () => {
+  // 检查用户是否已登录
+  if (!isLoggedIn.value) {
+    // 未登录，显示登录弹窗
+    showLoginModal.value = true;
+  } else {
+    // 已登录，显示反馈弹窗
+    showFeedbackModal.value = true;
+  }
+};
+
+// 显示登录弹窗函数
+const showLoginModalFunction = () => {
+  showLoginModal.value = true;
+};
+
+// 关闭问题反馈弹窗
+const closeFeedbackModal = () => {
+  showFeedbackModal.value = false;
 };
 
 // 检查登录状态
@@ -332,10 +356,47 @@ onMounted(() => {
       :is-modal="true"
       @close="closeUpdateInfoModal"
     />
+
+    <!-- 回到顶部和问题反馈按钮 -->
+    <div class="floating-buttons">
+      <button 
+        class="floating-button feedback-button" 
+        @click="showFeedback"
+        title="问题反馈"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button 
+        class="floating-button top-button" 
+        @click="scrollToTop"
+        :class="{ 'show': showBackToTop }"
+        title="回到顶部"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 19V5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M5 12L12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 问题反馈弹窗 -->
+    <Feedback
+      v-if="showFeedbackModal"
+      :is-modal="true"
+      :is-logged-in="isLoggedIn"
+      :show-login-modal="showLoginModalFunction"
+      @close="closeFeedbackModal"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import { message } from 'ant-design-vue';
+
 export default {
   data() {
     return {
@@ -345,10 +406,34 @@ export default {
         { key: "learning-center", name: "学习中心" },
         { key: "service-operation", name: "服务运营" },
         { key: "business-connection", name: "商业对接" },
-        { key: "community", name: "社群互动" },
       ],
+      // 悬浮按钮相关数据
+      showBackToTop: false,
+      showFeedbackModal: false
     };
   },
+  mounted() {
+    // 监听滚动事件，控制回到顶部按钮显示
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeUnmount() {
+    // 清理事件监听器
+    window.removeEventListener('scroll', this.handleScroll);
+  },
+  methods: {
+    // 处理滚动事件
+    handleScroll() {
+      this.showBackToTop = window.scrollY > 300;
+    },
+    
+    // 回到顶部
+    scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  }
 };
 </script>
 
@@ -581,5 +666,86 @@ body {
   margin-top: 8px;
   font-size: 14px;
   color: #666;
+}
+
+/* 悬浮按钮样式 */
+.floating-buttons {
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.floating-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.floating-button:hover {
+  background-color: #001a80;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.floating-button.feedback-button {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+.floating-button.feedback-button:hover {
+  background-color: #ffda4d;
+}
+
+/* 回到顶部按钮显示/隐藏动画 */
+.floating-button.top-button {
+  opacity: 0;
+  transform: translateY(20px);
+  visibility: hidden;
+}
+
+.floating-button.top-button.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .floating-buttons {
+    right: 20px;
+    bottom: 20px;
+  }
+  
+  .floating-button {
+    width: 45px;
+    height: 45px;
+  }
+  
+  .feedback-modal {
+    margin: 10px;
+    max-height: calc(100vh - 20px);
+  }
+  
+  .feedback-modal-header,
+  .feedback-modal-body,
+  .feedback-modal-footer {
+    padding: 15px;
+  }
 }
 </style>

@@ -7,19 +7,23 @@ interface UpdatePassword {
   captcha: string;
 }
 
-interface UpdateInfo {
+interface UpdateUserInfo {
   headPic: string;
   nickName: string;
   email: string;
   captcha: string;
+  industry: string;
+  douyinAccount: string;
+  contactInfo: string;
+  targetRequirements: string[];
 }
 
 export function updatePassword(updatePassword: UpdatePassword) {
   return axiosInstance.post("/user/admin/update_password", updatePassword);
 }
 
-export function updateInfo(updateInfo: UpdateInfo) {
-  return axiosInstance.post("/user/admin/update", updateInfo);
+export function updateUserInfo(updateUserInfo: UpdateUserInfo) {
+  return axiosInstance.post("/user/admin/update", updateUserInfo);
 }
 
 export function getUserInfo() {

@@ -27,16 +27,17 @@ export function register(registerUser: RegisterUser) {
 }
 
 interface UpdateInfo {
+  username: string;
   industry: string;
   douyinAccount: string;
-  phone: string;
+  contactInfo: string;
   email: string;
-  targetNeeds: string;
+  targetRequirements: string[];
   captcha: string;
 }
 
-export function updateInfo(updateInfo: UpdateInfo) {
-  return axiosInstance.post("/user/update", updateInfo);
+export function updateUserInfo(updateUserInfo: UpdateInfo) {
+  return axiosInstance.post("/user/update", updateUserInfo);
 }
 
 export function getUserInfo() {

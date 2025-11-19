@@ -27,10 +27,7 @@ const router = createRouter({
       path: "/business-connection",
       component: () => import("@/views/BusinessConnection.vue"),
     },
-    {
-      path: "/community",
-      component: () => import("@/views/Community.vue"),
-    },
+    
     {
       path: "/login",
       component: () => import("@/views/Login.vue"),

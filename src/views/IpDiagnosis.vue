@@ -304,7 +304,7 @@ const loadProgressFromStorage = () => {
   // 获取当前登录用户信息
   const currentUserInfo = localStorage.getItem("user_info");
   let currentUsername = "";
-  
+
   if (currentUserInfo) {
     try {
       const user = JSON.parse(currentUserInfo);
@@ -352,7 +352,7 @@ const saveProgressToStorage = () => {
     "ipDiagnosisIndex",
     currentQuestionIndex.value.toString()
   );
-  
+
   // 新增：保存当前用户名，用于后续匹配检查
   const currentUserInfo = localStorage.getItem("user_info");
   if (currentUserInfo) {
@@ -764,7 +764,7 @@ const confirmRestartDiagnosis = () => {
             <h3>诊断说明</h3>
             <ul>
               <li>
-                本问卷包含IP基础属性,内容运营,变现潜力，账号数据四个维度，共12道题目
+                本问卷包含IP基础属性，内容运营,变现潜力，账号数据四个维度，共12道题目
               </li>
               <li>请根据实际情况作答</li>
               <li>提交后将获得个性化发展建议</li>

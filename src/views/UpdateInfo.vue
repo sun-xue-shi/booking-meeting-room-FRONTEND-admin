@@ -7,24 +7,45 @@
       </div>
 
       <div class="update-info-form">
-        <Form :model="updateInfoData" @finish="handleUpdateInfo" layout="vertical">
+        <Form
+          :model="updateInfoData"
+          @finish="handleUpdateInfo"
+          layout="vertical"
+        >
+          <FormItem label="用户名" name="username">
+            <Input
+              v-model:value="updateInfoData.username"
+              placeholder="请输入用户名"
+              size="large"
+            />
+          </FormItem>
+
           <FormItem label="行业" name="industry">
-            <Input v-model:value="updateInfoData.industry" placeholder="请输入所在行业" size="large" />
+            <Input
+              v-model:value="updateInfoData.industry"
+              placeholder="请输入所在行业"
+              size="large"
+            />
           </FormItem>
 
           <FormItem label="抖音账号" name="douyinAccount">
-            <Input v-model:value="updateInfoData.douyinAccount" placeholder="请输入抖音账号" size="large" />
+            <Input
+              v-model:value="updateInfoData.douyinAccount"
+              placeholder="请输入抖音账号"
+              size="large"
+            />
           </FormItem>
 
           <FormItem
-            label="联系方式（手机号）"
-            name="phone"
-            :rules="[
-              { required: true, message: '请输入手机号' },
-              { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号格式' }
-            ]"
+            label="联系方式"
+            name="contactInfo"
+            :rules="[{ required: true, message: '请输入联系方式' }]"
           >
-            <Input v-model:value="updateInfoData.phone" placeholder="请输入手机号" size="large" />
+            <Input
+              v-model:value="updateInfoData.contactInfo"
+              placeholder="请输入联系方式"
+              size="large"
+            />
           </FormItem>
 
           <FormItem
@@ -32,15 +53,19 @@
             name="email"
             :rules="[
               { required: true, message: '请输入邮箱' },
-              { type: 'email', message: '请输入正确的邮箱格式' }
+              { type: 'email', message: '请输入正确的邮箱格式' },
             ]"
           >
-            <Input v-model:value="updateInfoData.email" placeholder="请输入邮箱" size="large" />
+            <Input
+              v-model:value="updateInfoData.email"
+              placeholder="请输入邮箱"
+              size="large"
+            />
           </FormItem>
 
-          <FormItem label="目标需求" name="targetNeeds">
+          <FormItem label="目标需求" name="targetRequirements">
             <Select
-              v-model:value="updateInfoData.targetNeeds"
+              v-model:value="updateInfoData.targetRequirements"
               mode="multiple"
               placeholder="请选择目标需求（可多选）"
               :options="targetNeedOptions"
@@ -66,7 +91,9 @@
                 :loading="captchaLoading"
               >
                 <span :class="captchaTimer > 0 ? 'countdown-text' : ''">
-                  {{ captchaTimer > 0 ? `${captchaTimer}秒后重发` : '发送验证码' }}
+                  {{
+                    captchaTimer > 0 ? `${captchaTimer}秒后重发` : "发送验证码"
+                  }}
                 </span>
               </Button>
             </div>
@@ -90,166 +117,164 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { 
-  Form, 
-  FormItem, 
-  Input, 
-  Select, 
-  Button 
-} from 'ant-design-vue'
-import { useInfoStore } from '@/stores/info'
-import { updateInfo } from '@/service/common/api'
-import { updateInfoCaptcha } from '@/service/email/captcha'
+import { ref, reactive, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { message } from "ant-design-vue";
+import { Form, FormItem, Input, Select, Button } from "ant-design-vue";
+import { useInfoStore } from "@/stores/info";
+import { updateUserInfo } from "@/service/common/api";
+import { updateInfoCaptcha } from "@/service/email/captcha";
 
 // 定义 props
 const props = defineProps<{
-  isModal?: boolean
-}>()
+  isModal?: boolean;
+}>();
 
 // 定义 emits
-const emit = defineEmits(['close'])
+const emit = defineEmits(["close"]);
 
 // 使用 router
-const router = useRouter()
+const router = useRouter();
 
 // 使用 store
-const infoStore = useInfoStore()
+const infoStore = useInfoStore();
 
 // 状态管理
-const loading = ref(false)
-const captchaTimer = ref(0)
-const captchaLoading = ref(false)
-const isSend = ref(false)
+const loading = ref(false);
+const captchaTimer = ref(0);
+const captchaLoading = ref(false);
+const isSend = ref(false);
 
 // 目标需求选项
 const targetNeedOptions = [
-  { label: 'IP诊断', value: 'ip-diagnosis' },
-  { label: '商业对接', value: 'business-connection' },
-  { label: '课程学习', value: 'learning-center' },
-  { label: '服务运营', value: 'service-operation' }
-]
+  { label: "IP诊断", value: "0" },
+  { label: "商业对接", value: "1" },
+  { label: "课程学习", value: "2" },
+  { label: "服务运营", value: "3" },
+  { label: "暂未确定", value: "4" },
+];
 
 // 修改信息表单数据
 const updateInfoData = reactive({
-  industry: '',
-  douyinAccount: '',
-  phone: '',
-  email: '',
-  targetNeeds: [] as string[],
-  captcha: ''
-})
+  username: "",
+  industry: "",
+  douyinAccount: "",
+  contactInfo: "",
+  email: "",
+  targetRequirements: [] as string[],
+  captcha: "",
+});
 
 // 关闭功能
 const closeModal = () => {
   if (props.isModal) {
     // 作为弹窗使用时，emit关闭事件
-    emit('close')
+    emit("close");
   } else {
     // 作为路由页面使用时，返回上一页
-    router.back()
+    router.back();
   }
-}
+};
 
 // 点击遮罩层关闭弹窗
 const handleOverlayClick = () => {
-  closeModal()
-}
+  closeModal();
+};
 
 // 发送验证码
 const sendCaptcha = async () => {
   if (!updateInfoData.email) {
-    message.error('请输入邮箱')
-    return
+    message.error("请输入邮箱");
+    return;
   }
-  
+
   // 邮箱格式校验
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(updateInfoData.email)) {
-    message.error('请输入正确的邮箱格式')
-    return
+    message.error("请输入正确的邮箱格式");
+    return;
   }
-  
+
   // 设置loading状态
-  captchaLoading.value = true
-  
+  captchaLoading.value = true;
+
   try {
-    const res = await updateInfoCaptcha()
+    const res = await updateInfoCaptcha();
     if (res.data.code === 200 || res.data.code === 201) {
-      message.success('验证码已发送')
-      
+      message.success("验证码已发送");
+
       // 启动倒计时
-      captchaLoading.value = false
-      isSend.value = true
-      captchaTimer.value = 30
+      captchaLoading.value = false;
+      isSend.value = true;
+      captchaTimer.value = 30;
       const timer = setInterval(() => {
-        captchaTimer.value--
+        captchaTimer.value--;
         if (captchaTimer.value <= 0) {
-          clearInterval(timer)
-          isSend.value = false
+          clearInterval(timer);
+          isSend.value = false;
         }
-      }, 1000)
+      }, 1000);
     } else {
-      message.error(res.data.data || '发送验证码失败')
-      captchaLoading.value = false
+      message.error(res.data.data || "发送验证码失败");
+      captchaLoading.value = false;
     }
   } catch (error) {
-    message.error('发送验证码失败')
-    captchaLoading.value = false
+    message.error("发送验证码失败");
+    captchaLoading.value = false;
   }
-}
+};
 
 // 处理信息更新
 const handleUpdateInfo = async (values: any) => {
-  loading.value = true
+  loading.value = true;
   try {
     // 构造请求参数
     const updateParams = {
+      username: updateInfoData.username,
       industry: updateInfoData.industry,
       douyinAccount: updateInfoData.douyinAccount,
-      phone: updateInfoData.phone,
+      contactInfo: updateInfoData.contactInfo,
       email: updateInfoData.email,
-      targetNeeds: updateInfoData.targetNeeds.join(','),
-      captcha: updateInfoData.captcha
-    }
-    
-    const res = await updateInfo(updateParams)
+      targetRequirements: updateInfoData.targetRequirements,
+      captcha: updateInfoData.captcha,
+    };
+
+    const res = await updateUserInfo(updateParams);
     if (res.data.code === 200 || res.data.code === 201) {
-      message.success('信息更新成功')
-      closeModal()
+      message.success("信息更新成功");
+      closeModal();
     } else {
-      message.error(res.data.data || '信息更新失败')
+      message.error(res.data.data || "信息更新失败");
     }
   } catch (error) {
-    message.error('信息更新失败')
+    message.error("信息更新失败");
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 // 获取用户信息并填充表单
 const loadUserInfo = async () => {
   try {
-    await infoStore.getLoginInfo()
-    const userInfo = infoStore.updateUserInfo
-    
+    await infoStore.getLoginInfo();
+    const userInfo = infoStore.updateUserInfo;
+
     // 填充表单数据
-    updateInfoData.email = userInfo.email || ''
-    updateInfoData.industry = userInfo.industry || ''
-    updateInfoData.douyinAccount = userInfo.douyinAccount || ''
-    updateInfoData.phone = userInfo.phone || ''
-    updateInfoData.targetNeeds = userInfo.targetNeeds || []
+    updateInfoData.username = userInfo.username || "";
+    updateInfoData.email = userInfo.email || "";
+    updateInfoData.industry = userInfo.industry || "";
+    updateInfoData.douyinAccount = userInfo.douyinAccount || "";
+    updateInfoData.contactInfo = userInfo.contactInfo || "";
+    updateInfoData.targetRequirements = userInfo.targetRequirements || [];
   } catch (error) {
-    console.error('获取用户信息失败:', error)
+    console.error("获取用户信息失败:", error);
   }
-}
+};
 
 // 组件挂载时加载用户信息
 onMounted(() => {
-  loadUserInfo()
-})
+  loadUserInfo();
+});
 </script>
 
 <style scoped lang="less">
@@ -295,7 +320,7 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 16px 16px 0;
-  
+
   h2 {
     margin: 0;
     color: var(--primary-color);
@@ -317,7 +342,7 @@ onMounted(() => {
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s ease;
-  
+
   &:hover {
     color: #333;
     background-color: rgba(0, 0, 0, 0.05);
@@ -337,14 +362,16 @@ onMounted(() => {
   color: #555;
 }
 
-:deep(.ant-input), :deep(.ant-input-password) {
+:deep(.ant-input),
+:deep(.ant-input-password) {
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 14px;
   border: 1px solid #ddd;
   transition: all 0.3s;
-  
-  &:focus, &:hover {
+
+  &:focus,
+  &:hover {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(0, 0, 128, 0.1);
   }
@@ -352,17 +379,17 @@ onMounted(() => {
 
 :deep(.ant-select) {
   border-radius: 8px;
-  
+
   .ant-select-selector {
     border-radius: 8px !important;
     border: 1px solid #ddd !important;
     transition: all 0.3s;
-    
+
     &:hover {
       border-color: var(--primary-color) !important;
     }
   }
-  
+
   &.ant-select-focused {
     .ant-select-selector {
       border-color: var(--primary-color) !important;
@@ -381,8 +408,9 @@ onMounted(() => {
 :deep(.ant-btn-primary) {
   background: var(--primary-color);
   border-color: var(--primary-color);
-  
-  &:hover, &:focus {
+
+  &:hover,
+  &:focus {
     background: #001a80;
     border-color: #001a80;
     transform: translateY(-1px);
@@ -393,11 +421,11 @@ onMounted(() => {
 .captcha-input {
   display: flex;
   gap: 8px;
-  
+
   :deep(.ant-input) {
     flex: 1;
   }
-  
+
   :deep(.ant-btn) {
     flex-shrink: 0;
     padding: 0 12px;
@@ -413,15 +441,15 @@ onMounted(() => {
     margin: 16px;
     max-width: calc(100% - 32px);
   }
-  
+
   .modal-header {
     padding: 16px 20px;
   }
-  
+
   .update-info-form {
     padding: 0 16px 16px;
   }
-  
+
   .captcha-input {
     flex-direction: column;
   }
