@@ -449,7 +449,7 @@ body {
 
 /* 主题色变量 */
 :root {
-  --primary-color: #00219f;
+  --primary-color: #002e9f;
   --secondary-color: #ffd271;
   --text-color: #333;
   --bg-color: #f5f5f5;

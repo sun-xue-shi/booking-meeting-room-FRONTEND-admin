@@ -623,12 +623,42 @@ const submitReview = async () => {
   margin: 0 auto;
   padding: 40px 20px;
   min-height: calc(100vh - 64px);
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f7ff 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 背景装饰 - 微光海效果 */
+.service-operation-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+      circle at 30% 30%,
+      rgba(0, 46, 159, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 70%,
+      rgba(0, 46, 159, 0.08) 0%,
+      transparent 60%
+    );
+  z-index: 0;
+}
+
+.service-operation-container > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* 页面头部 */
 .page-header {
   text-align: center;
   margin-bottom: 40px;
+  padding: 20px 0;
 }
 
 .page-title {
@@ -636,24 +666,42 @@ const submitReview = async () => {
   color: var(--primary-color);
   margin-bottom: 16px;
   font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 46, 159, 0.1);
+  background: linear-gradient(90deg, var(--primary-color), #0040c1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
 .page-subtitle {
   font-size: 18px;
   color: #666;
   line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 /* 卡片样式 */
 .section-card {
   margin-bottom: 30px;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 46, 159, 0.08);
+  background: white;
+  border: 1px solid rgba(0, 46, 159, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.section-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 46, 159, 0.12);
 }
 
 :deep(.ant-card-head) {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(0, 46, 159, 0.1);
   padding: 0 24px;
+  background: linear-gradient(90deg, rgba(0, 46, 159, 0.03), transparent);
 }
 
 :deep(.ant-card-head-title) {
@@ -668,24 +716,30 @@ const submitReview = async () => {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 46, 159, 0.3);
+  transition: all 0.3s ease;
 }
 
 :deep(.ant-btn-primary:hover) {
-  background-color: #001a80;
-  border-color: #001a80;
+  background-color: #003aa8;
+  border-color: #003aa8;
   color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 46, 159, 0.4);
 }
 
 :deep(.ant-btn-primary:focus) {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   color: #fff;
+  box-shadow: 0 0 0 2px rgba(0, 46, 159, 0.2);
 }
 
 :deep(.ant-btn-primary:active) {
-  background-color: #001a80;
-  border-color: #001a80;
+  background-color: #002a7c;
+  border-color: #002a7c;
   color: #fff;
+  transform: translateY(0);
 }
 
 /* 特色套餐核心承诺样式 */
@@ -731,12 +785,19 @@ const submitReview = async () => {
   color: var(--primary-color);
   cursor: pointer;
   font-size: 14px;
-  text-decoration: underline;
+  text-decoration: none;
   margin-bottom: 0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  background: rgba(0, 46, 159, 0.05);
+  border: 1px solid rgba(0, 46, 159, 0.1);
 }
 
 .view-packages-link:hover {
-  color: #0056b3;
+  color: var(--primary-color);
+  background: rgba(0, 46, 159, 0.1);
+  text-decoration: none;
 }
 
 /* 套餐选择 */
@@ -750,16 +811,39 @@ const submitReview = async () => {
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid transparent;
+  overflow: hidden;
+  position: relative;
+}
+
+.package-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), #0040c1);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.package-card:hover::before {
+  opacity: 1;
 }
 
 .package-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 12px 30px rgba(0, 46, 159, 0.15);
 }
 
 .package-card.selected {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 46, 159, 0.2);
+  background: linear-gradient(135deg, white, #f0f8ff);
+}
+
+.package-card.selected::before {
+  opacity: 1;
 }
 
 .package-header {
@@ -772,7 +856,26 @@ const submitReview = async () => {
 .package-name {
   font-size: 20px;
   font-weight: bold;
-  color: #333;
+  color: var(--primary-color);
+}
+
+/* 为金色套餐添加特殊标识 */
+.package-card:nth-child(1) :deep(.ant-card-head) {
+  background: linear-gradient(90deg, rgba(255, 210, 113, 0.15), transparent);
+  position: relative;
+}
+
+.package-card:nth-child(1) :deep(.ant-card-head)::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: 24px;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .package-content {
@@ -780,10 +883,11 @@ const submitReview = async () => {
 }
 
 .package-price {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: bold;
   color: var(--primary-color);
   margin-bottom: 12px;
+  text-shadow: 0 1px 2px rgba(0, 46, 159, 0.1);
 }
 
 .package-audience,
@@ -792,6 +896,10 @@ const submitReview = async () => {
   color: #666;
   margin-bottom: 12px;
   line-height: 1.5;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid var(--primary-color);
 }
 
 .package-features {
@@ -805,6 +913,15 @@ const submitReview = async () => {
   display: flex;
   align-items: flex-start;
   line-height: 1.5;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px 12px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.package-features li:hover {
+  background: rgba(0, 46, 159, 0.05);
+  transform: translateX(5px);
 }
 
 .feature-icon {
@@ -815,11 +932,27 @@ const submitReview = async () => {
   margin-top: 3px;
 }
 
-/* 通用服务保障卡片特殊样式 */
+/* 通用服务保障卡片特殊样式 - 微光海主题 */
 .guarantee-card {
-  background: linear-gradient(135deg, #f0f8ff, #e6f7ff);
-  border: 1px solid #d9edf7;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 46, 159, 0.05),
+    rgba(0, 64, 193, 0.08)
+  );
+  border: 1px solid rgba(0, 46, 159, 0.1);
   grid-column: span 2;
+  position: relative;
+  overflow: hidden;
+}
+
+.guarantee-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-color), #0040c1, #66b3ff);
 }
 
 .guarantee-card .package-header {
@@ -837,9 +970,20 @@ const submitReview = async () => {
 .guarantee-features li {
   margin-bottom: 15px;
   line-height: 1.6;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  padding: 12px 16px;
+  border-left: 4px solid var(--primary-color);
+  transition: all 0.3s ease;
 }
 
-/* 进度跟踪 */
+.guarantee-features li:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(8px);
+  box-shadow: 0 4px 12px rgba(0, 46, 159, 0.1);
+}
+
+/* 进度跟踪 - 微光海风格 */
 .progress-tracker {
   padding: 24px 0;
 }
@@ -847,10 +991,27 @@ const submitReview = async () => {
 :deep(.ant-steps-item-title) {
   font-size: 16px;
   font-weight: 500;
+  color: var(--primary-color);
 }
 
 :deep(.ant-steps-item-description) {
   font-size: 14px;
+  color: #666;
+}
+
+:deep(.ant-steps-item-active .ant-steps-item-icon) {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+:deep(.ant-steps-item-finish .ant-steps-item-icon) {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+:deep(.ant-steps-item-finish .ant-steps-item-icon > .anticon) {
+  color: var(--primary-color);
 }
 
 /* 只读表单样式 */
@@ -860,24 +1021,73 @@ const submitReview = async () => {
 
 .form-field {
   margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.form-field:hover {
+  transform: translateX(5px);
 }
 
 .field-label {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
-  color: #333;
+  color: var(--primary-color);
 }
 
 .field-value {
-  padding: 8px 12px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+  padding: 10px 14px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
   min-height: 20px;
+  border: 1px solid rgba(0, 46, 159, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 46, 159, 0.05);
 }
 
 .textarea-value {
   white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* 表单样式优化 */
+:deep(.ant-input),
+:deep(.ant-textarea),
+:deep(.ant-select-selector) {
+  border-radius: 6px;
+  border: 1px solid rgba(0, 46, 159, 0.2);
+  transition: all 0.3s ease;
+}
+
+:deep(.ant-input:focus),
+:deep(.ant-textarea:focus),
+:deep(.ant-select-selector:focus),
+:deep(.ant-select-selector:hover) {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(0, 46, 159, 0.1);
+}
+
+/* 评分组件样式 */
+:deep(.ant-rate-star-first) {
+  color: var(--secondary-color);
+}
+
+/* 标签样式 */
+:deep(.ant-tag) {
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+:deep(.ant-tag-blue) {
+  background-color: rgba(0, 46, 159, 0.1);
+  color: var(--primary-color);
+  border-color: rgba(0, 46, 159, 0.2);
+}
+
+:deep(.ant-tag-gold) {
+  background-color: rgba(255, 210, 113, 0.1);
+  color: #8a6d3b;
+  border-color: rgba(255, 210, 113, 0.3);
 }
 
 /* 响应式设计 */

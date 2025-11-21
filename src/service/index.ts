@@ -3,8 +3,8 @@ import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
 export const axiosInstance = axios.create({
-  // baseURL: "/api",
-  baseURL: "http://localhost:3005",
+  baseURL: "/api",
+  // baseURL: "http://localhost:3005",
   timeout: 5000,
 });
 
