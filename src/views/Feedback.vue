@@ -98,9 +98,14 @@ const feedbackData = reactive({
 });
 
 // 表单校验规则
-const feedbackRules = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const feedbackRules: { [key: string]: any[] } = {
   content: [
-    { required: true, message: '请输入您遇到的问题', trigger: 'blur' }
+    { 
+      required: true, 
+      message: '请输入您遇到的问题', 
+      trigger: 'blur' 
+    }
   ]
 };
 

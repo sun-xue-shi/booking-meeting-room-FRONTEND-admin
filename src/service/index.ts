@@ -3,7 +3,8 @@ import axios from "axios";
 import type { AxiosRequestConfig } from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "/api",
+  // baseURL: "/api",
+  baseURL: "http://localhost:3005",
   timeout: 5000,
 });
 
@@ -83,4 +84,4 @@ async function refreshToken() {
 }
 
 // 导出反馈服务
-export * from './feedback';
+export * from "./feedback";

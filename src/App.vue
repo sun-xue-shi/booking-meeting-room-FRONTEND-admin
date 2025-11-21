@@ -238,8 +238,8 @@ onMounted(() => {
     <!-- 导航栏 -->
     <header class="navbar">
       <div class="navbar-content">
-        <div class="logo" style="display: flex; align-items: center; gap: 8px">
-          <img src="@/assets/logo.png" alt="公司logo" style="height: 150px" />
+        <div class="logo" style="display: flex; align-items: center; gap: 8px" @click="handleNavClick('home')">
+          <img src="@/assets/logo.png" alt="公司logo" style="height: 150px; cursor: pointer;" />
         </div>
         <nav class="nav-tabs">
           <div
