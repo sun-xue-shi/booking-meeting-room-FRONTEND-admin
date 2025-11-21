@@ -507,7 +507,6 @@ const submitService = async () => {
     };
 
     const response = await submitServiceRequest(requestData);
-    console.log("服务需求提交成功:", response.data);
 
     // 更新状态
     serviceRequestSubmitted.value = true;
@@ -532,13 +531,10 @@ const submitService = async () => {
 onMounted(async () => {
   try {
     const response = await getServiceProgress();
-    console.log("获取服务进度成功:", response.data);
 
     // 如果有历史数据，则回显数据并设置为只读状态
     if (response.data && response.data.data.length > 0) {
       const userData = response.data.data[0];
-
-      console.log(userData, "userData");
 
       // 填充表单数据
       serviceForm.package = userData.packageOption;
@@ -600,7 +596,6 @@ const submitReview = async () => {
     };
 
     const response = await submitServiceReview(reviewData);
-    console.log("服务评价提交成功:", response.data);
 
     // 提交成功后，显示评价内容
     message.success("评价提交成功，感谢您的反馈！");

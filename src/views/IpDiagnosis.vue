@@ -321,7 +321,6 @@ const loadProgressFromStorage = () => {
 
   // 检查用户名是否匹配
   if (savedUsername && currentUsername && savedUsername !== currentUsername) {
-    console.log("用户名不匹配，不采用之前的答题进度");
     // 用户名不匹配，清空现有的存储数据
     clearProgressStorage();
     return;
@@ -380,15 +379,12 @@ const checkExistingDiagnosis = async () => {
   try {
     // 从localStorage获取用户名
     const userInfo = localStorage.getItem("user_info");
-    console.log("从localStorage获取的userInfo:", userInfo);
 
     if (!userInfo) {
       // 如果没有用户信息，使用localStorage逻辑
       loadProgressFromStorage();
       return;
     }
-
-    console.log(111);
 
     const user = JSON.parse(userInfo);
     const username = user.username;
@@ -400,7 +396,6 @@ const checkExistingDiagnosis = async () => {
 
     // 调用getIpDiagnosis接口
     const response = await getIpDiagnosis();
-    console.log("获取用户诊断结果:", response);
 
     // 检查返回的数据格式
     if (
@@ -569,7 +564,6 @@ const handleDiagnosis = async () => {
         // 调用后端接口获取建议
         await getIpScore(scores.totalScore);
         const res = await getIpSuggest(scores.totalScore);
-        // console.log("后端返回的建议:", response);
 
         const { suggestion, level, conclusion } = res.data.data;
         // 设置诊断结果

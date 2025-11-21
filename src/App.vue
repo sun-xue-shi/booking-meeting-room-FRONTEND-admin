@@ -42,7 +42,6 @@ const handleNavClick = (key: string) => {
     if (!isLoggedIn.value) {
       // 未登录，显示登录弹窗并阻止跳转
       showLoginModal.value = true;
-      console.log(`用户尝试访问${key}页面，但未登录，显示登录弹窗`);
     } else {
       // 已登录，允许跳转
       activeKey.value = key;
@@ -138,13 +137,11 @@ const checkLoginStatus = async () => {
       const res = await getUserInfo();
       if (res.data.code === 200 || res.data.code === 201) {
         const userData = res.data.data;
-        console.log("用户信息获取成功:", userData);
 
         // 更新用户信息
         userInfo.value.username = userData.username || "用户";
         userInfo.value.nickName = userData.nickName || "昵称";
       } else {
-        console.log("获取用户信息失败:", res.data.data);
         // 使用localStorage中的用户信息作为备选
         const localUserInfo = localStorage.getItem("user_info");
         if (localUserInfo) {
@@ -154,7 +151,6 @@ const checkLoginStatus = async () => {
         }
       }
     } catch (error) {
-      console.log("获取用户信息出错:", error);
       // 使用localStorage中的用户信息作为备选
       const localUserInfo = localStorage.getItem("user_info");
       if (localUserInfo) {
@@ -195,7 +191,6 @@ const handleLoginSuccess = async (loginUserInfo: any) => {
     const res = await getUserInfo();
     if (res.data.code === 200 || res.data.code === 201) {
       const userData = res.data.data;
-      console.log("登录成功后获取的用户信息:", userData);
 
       // 更新用户信息为最新数据
       userInfo.value.username =
@@ -203,7 +198,6 @@ const handleLoginSuccess = async (loginUserInfo: any) => {
       userInfo.value.nickName =
         userData.nickName || loginUserInfo.nickName || "昵称";
     } else {
-      console.log("登录成功后获取用户信息失败:", res.data.data);
     }
   } catch (error) {
     console.log("登录成功后获取用户信息出错:", error);
