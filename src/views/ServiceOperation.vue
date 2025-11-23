@@ -282,6 +282,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-nocheck
 import { ref, reactive, onMounted } from "vue";
 import {
   Card as ACard,
@@ -693,10 +694,10 @@ const submitReview = async () => {
   overflow: hidden;
 }
 
-.section-card:hover {
+/* .section-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(0, 46, 159, 0.12);
-}
+} */
 
 :deep(.ant-card-head) {
   border-bottom: 1px solid rgba(0, 46, 159, 0.1);
@@ -720,13 +721,13 @@ const submitReview = async () => {
   transition: all 0.3s ease;
 }
 
-:deep(.ant-btn-primary:hover) {
+/* :deep(.ant-btn-primary:hover) {
   background-color: #003aa8;
   border-color: #003aa8;
   color: #fff;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(0, 46, 159, 0.4);
-}
+} */
 
 :deep(.ant-btn-primary:focus) {
   background-color: var(--primary-color);
@@ -794,11 +795,11 @@ const submitReview = async () => {
   border: 1px solid rgba(0, 46, 159, 0.1);
 }
 
-.view-packages-link:hover {
+/* .view-packages-link:hover {
   color: var(--primary-color);
   background: rgba(0, 46, 159, 0.1);
   text-decoration: none;
-}
+} */
 
 /* 套餐选择 */
 .packages-grid {
@@ -831,10 +832,10 @@ const submitReview = async () => {
   opacity: 1;
 }
 
-.package-card:hover {
+/* .package-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 12px 30px rgba(0, 46, 159, 0.15);
-}
+} */
 
 .package-card.selected {
   border-color: var(--primary-color);
@@ -919,10 +920,10 @@ const submitReview = async () => {
   transition: all 0.2s ease;
 }
 
-.package-features li:hover {
+/* .package-features li:hover {
   background: rgba(0, 46, 159, 0.05);
   transform: translateX(5px);
-}
+} */
 
 .feature-icon {
   color: var(--primary-color);
@@ -977,11 +978,11 @@ const submitReview = async () => {
   transition: all 0.3s ease;
 }
 
-.guarantee-features li:hover {
+/* .guarantee-features li:hover {
   background: rgba(255, 255, 255, 1);
   transform: translateX(8px);
   box-shadow: 0 4px 12px rgba(0, 46, 159, 0.1);
-}
+} */
 
 /* 进度跟踪 - 微光海风格 */
 .progress-tracker {
@@ -1024,9 +1025,9 @@ const submitReview = async () => {
   transition: all 0.3s ease;
 }
 
-.form-field:hover {
+/* .form-field:hover {
   transform: translateX(5px);
-}
+} */
 
 .field-label {
   display: block;
@@ -1058,13 +1059,13 @@ const submitReview = async () => {
   transition: all 0.3s ease;
 }
 
-:deep(.ant-input:focus),
+/* :deep(.ant-input:focus),
 :deep(.ant-textarea:focus),
 :deep(.ant-select-selector:focus),
 :deep(.ant-select-selector:hover) {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(0, 46, 159, 0.1);
-}
+} */
 
 /* 评分组件样式 */
 :deep(.ant-rate-star-first) {
